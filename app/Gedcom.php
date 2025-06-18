@@ -1053,19 +1053,12 @@ class Gedcom
         }
 
         if (Site::getPreference('CUSTOM_DATEPHRASE_TAGS') === '1') {
-            $subtags['FAM:ANUL:DATE'][]  = ['PHRASE', '0:1'];
-            $subtags['FAM:CENS:DATE'][]  = ['PHRASE', '0:1'];
-            $subtags['FAM:DIV:DATE'][]   = ['PHRASE', '0:1'];
-            $subtags['FAM:DIVF:DATE'][]  = ['PHRASE', '0:1'];
+            // needed when the fact date has an explicit translation set in function gedcom551Tags
+            $subtags['FAM:DIV:DATE'][]  = ['PHRASE', '0:1'];
             $subtags['FAM:ENGA:DATE'][]  = ['PHRASE', '0:1'];
-            $subtags['FAM:EVEN:DATE'][]  = ['PHRASE', '0:1'];
             $subtags['FAM:MARB:DATE'][]  = ['PHRASE', '0:1'];
-            $subtags['FAM:MARC:DATE'][]  = ['PHRASE', '0:1'];
-            $subtags['FAM:MARL:DATE'][]  = ['PHRASE', '0:1'];
             $subtags['FAM:MARR:DATE'][]  = ['PHRASE', '0:1'];
-            $subtags['FAM:SLGS:DATE'][]  = ['PHRASE', '0:1'];
             $subtags['INDI:ADOP:DATE'][] = ['PHRASE', '0:1'];
-            $subtags['INDI:BAPL:DATE'][] = ['PHRASE', '0:1'];
             $subtags['INDI:BAPM:DATE'][] = ['PHRASE', '0:1'];
             $subtags['INDI:BARM:DATE'][] = ['PHRASE', '0:1'];
             $subtags['INDI:BASM:DATE'][] = ['PHRASE', '0:1'];
@@ -1074,20 +1067,16 @@ class Gedcom
             $subtags['INDI:BURI:DATE'][] = ['PHRASE', '0:1'];
             $subtags['INDI:CENS:DATE'][] = ['PHRASE', '0:1'];
             $subtags['INDI:CHR:DATE'][]  = ['PHRASE', '0:1'];
-            $subtags['INDI:CHRA:DATE'][] = ['PHRASE', '0:1'];
             $subtags['INDI:CONF:DATE'][] = ['PHRASE', '0:1'];
-            $subtags['INDI:CONL:DATE'][] = ['PHRASE', '0:1'];
             $subtags['INDI:CREM:DATE'][] = ['PHRASE', '0:1'];
             $subtags['INDI:DEAT:DATE'][] = ['PHRASE', '0:1'];
             $subtags['INDI:EMIG:DATE'][] = ['PHRASE', '0:1'];
-            $subtags['INDI:ENDL:DATE'][] = ['PHRASE', '0:1'];
             $subtags['INDI:EVEN:DATE'][] = ['PHRASE', '0:1'];
             $subtags['INDI:FCOM:DATE'][] = ['PHRASE', '0:1'];
             $subtags['INDI:IMMI:DATE'][] = ['PHRASE', '0:1'];
             $subtags['INDI:NATU:DATE'][] = ['PHRASE', '0:1'];
             $subtags['INDI:ORDN:DATE'][] = ['PHRASE', '0:1'];
             $subtags['INDI:RESI:DATE'][] = ['PHRASE', '0:1'];
-            $subtags['INDI:SLGC:DATE'][] = ['PHRASE', '0:1'];
         }
 
         if (Site::getPreference('CUSTOM_GEDCOM_L_TAGS') === '1') {
