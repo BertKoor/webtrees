@@ -45,12 +45,15 @@ if (preg_match('/\n2 WIFE\n3 AGE (.+)/', $factrec, $match) === 1) {
 // Calculated age
 [, $tag] = explode(':', $fact->tag());
 
-if (preg_match('/\n2 DATE (.+)/', $factrec, $match) === 1) {
+if (preg_match('/\n2 DATE\s(.+)/', $factrec, $match) === 1) {
     $date = new Date($match[1]);
     $html .= ' ' . $date->display($cal_link ? $record->tree() : null, null, true);
     // Time isn't valid GEDCOM, but it is widely used.
     if ($time && preg_match('/\n3 TIME (.+)/', $factrec, $match) === 1) {
-        $html .= ' – <span class="date">' . $match[1] . '</span>';
+        $html .= ' – <span class="date time">' . $match[1] . '</span>';
+    }
+    if (preg_match('/2 DATE.*(?:\n[3-9].*)*\n3 PHRASE (.+)/', $factrec, $match) === 1) {
+        $html .= ' – <span class="date phrase">' . $match[1] . '</span>';
     }
 
     if ($record instanceof Individual) {
