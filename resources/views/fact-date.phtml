@@ -55,7 +55,7 @@ if (preg_match('/\n2 DATE\s(.+)/', $factrec) === 1) {
     }
     $html .= join(' - ', $htmlParts);
     if (preg_match('/2 DATE.*(?:\n[3-9].*)*\n3 PHRASE (.+)/', $factrec, $match) === 1) {
-        $html .= ' <span class="date phrase">(' . $match[1] . ')</span>';
+        $html .= ' <span class="date phrase">' . $match[1] . '</span>';
     }
     if ($date !== '' && $record instanceof Individual) {
         // Calculated age
