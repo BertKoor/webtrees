@@ -60,7 +60,7 @@ class Date
         $calendar_date_factory = Registry::calendarDateFactory();
 
         // Extract any explanatory text
-        if (preg_match('/^(.*) ?[(](.*)[)]/', $date, $match)) {
+        if (preg_match('/^(.*?) ?[(](.*)[)]/', $date, $match)) {
             $date       = $match[1];
             $this->text = $match[2];
         }
