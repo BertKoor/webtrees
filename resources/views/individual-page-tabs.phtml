@@ -16,7 +16,7 @@ use Illuminate\Support\Collection;
 <div class="wt-tabs-individual" id="individual-tabs">
     <ul class="nav nav-tabs flex-wrap" role="tablist">
         <?php foreach ($tabs as $tab) : ?>
-            <li class="nav-item" role="presentation">
+            <li class="nav-item <?= $tab->name() ?>" role="presentation">
                 <a class="nav-link<?= $tab->isGrayedOut($record) ? ' text-muted' : '' ?>" data-bs-toggle="tab" role="tab" data-wt-href="<?= e(route('module', ['module' => $tab->name(), 'action' => 'Tab', 'tree' => $record->tree()->name(), 'xref' => $record->xref()])) ?>" href="#<?= $tab->name() ?>">
                     <?= $tab->tabTitle() ?>
                 </a>
