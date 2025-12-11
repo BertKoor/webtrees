@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace Fisharebest\Webtrees\Services;
 
+use Fisharebest\Webtrees\Auth;
 use Fisharebest\Webtrees\Elements\AbstractXrefElement;
 use Fisharebest\Webtrees\Fact;
 use Fisharebest\Webtrees\Family;
@@ -344,4 +345,40 @@ class GedcomEditService
 
         return false;
     }
+
+    /**
+     * Add a child to a family.
+     *
+     * @param Individual $child
+     * @param Family $family
+     *
+     * @return void
+     */
+    public function addChildToFamily(Individual $child, Family $family): void
+    {
+        $child_birth_day = $child->getBirthDate()->julianDay();
+        $child_gedcom = '1 CHIL @' . $child->xref() . '@';
+        $family_facts = ['0 @' . $family->xref() . '@ FAM'];
+
+        // Insert new child at the right place
+        $done = false;
+        foreach ($family->facts([], false, Auth::PRIV_HIDE, true) as $fact) {
+            if ($fact->tag() === 'FAM:CHIL' && !$done) {
+                // insert new child when born before this child
+                if ($child_birth_day < $fact->target()->getBirthDate()->julianDay()) {
+                    $family_facts[] = $child_gedcom;
+                    $done = true;
+                }
+            }
+            $family_facts[] = $fact->gedcom();
+        }
+        if (!$done) {
+            // Append child at end
+            $family_facts[] = $child_gedcom;
+        }
+
+        $gedcom = implode("\n", $family_facts);
+        $family->updateRecord($gedcom, false);
+    }
+
 }

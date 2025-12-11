@@ -22,7 +22,7 @@ namespace Fisharebest\Webtrees\Http\RequestHandlers;
 use Fisharebest\Webtrees\Auth;
 use Fisharebest\Webtrees\Elements\PedigreeLinkageType;
 use Fisharebest\Webtrees\Registry;
-use Fisharebest\Webtrees\Services\FamilyService;
+use Fisharebest\Webtrees\Services\GedcomEditService;
 use Fisharebest\Webtrees\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -35,14 +35,14 @@ use function redirect;
  */
 class LinkChildToFamilyAction implements RequestHandlerInterface
 {
-    private FamilyService $family_service;
+    private GedcomEditService $gedcom_edit_service;
 
     /**
-     * @param FamilyService $family_service
+     * @param GedcomEditService $gedcom_edit_service
      */
-    public function __construct(FamilyService $family_service)
+    public function __construct(GedcomEditService $gedcom_edit_service)
     {
-        $this->family_service = $family_service;
+        $this->gedcom_edit_service = $gedcom_edit_service;
     }
 
     /**
@@ -101,7 +101,7 @@ class LinkChildToFamilyAction implements RequestHandlerInterface
         }
 
         if (!$chil_link_exists) {
-            $this->family_service->addChildToFamily($individual, $family);
+            $this->gedcom_edit_service->addChildToFamily($individual, $family);
         }
 
         return redirect($individual->url());
