@@ -22,11 +22,7 @@ namespace Fisharebest\Webtrees\Report;
 class ReportPdfImage extends ReportBaseImage
 {
     /**
-     * PDF image renderer
-     *
      * @param PdfRenderer $renderer
-     *
-     * @return void
      */
     public function render($renderer): void
     {

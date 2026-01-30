@@ -25,8 +25,6 @@ class TcpdfWrapper extends TCPDF
 {
     /**
      * Expose protected method in base class.
-     *
-     * @return float Return the remaining width
      */
     public function getRemainingWidth(): float
     {
@@ -35,12 +33,6 @@ class TcpdfWrapper extends TCPDF
 
     /**
      * Expose protected method in base class.
-     *
-     * @param float      $h       Cell height. Default value: 0.
-     * @param float|null $y       Starting y position, leave empty for current position.
-     * @param bool       $addpage If true add a page, otherwise only return the true/false state
-     *
-     * @return bool true in case of page break, false otherwise.
      */
     public function checkPageBreak($h = 0, $y = null, $addpage = true): bool
     {

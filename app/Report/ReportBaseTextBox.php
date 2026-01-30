@@ -19,33 +19,29 @@ declare(strict_types=1);
 
 namespace Fisharebest\Webtrees\Report;
 
-use function abs;
-
-abstract class ReportBaseLine extends ReportBaseElement
+abstract class ReportBaseTextBox extends ReportBaseElement
 {
+    /** @var array<ReportBaseElement|string> */
+    protected array $elements = [];
+
     public function __construct(
-        protected float $x1,
-        protected float $y1,
-        protected float $x2,
-        protected float $y2,
+        protected float $width,
+        protected float $height,
+        protected bool $border,
+        protected string $bgcolor,
+        protected bool $newline, // Does following text start on new line
+        protected float $left,
+        protected float $top,
+        protected bool $pagecheck,
+        protected string $style, // D or empty string: Draw (default), F: Fill, DF/FD: Draw and fill, CEO: Clip odd/even, CNZ: Clip non-zero winding
+        protected bool $fill,
+        protected bool $padding,
+        protected bool $reseth, // Resets this box last height after it’s done
     ) {
     }
 
-    /**
-     * @param HtmlRenderer|PdfRenderer $renderer
-     */
-    public function getHeight($renderer): float
+    public function addElement(ReportBaseElement|string $element): void
     {
-        return abs($this->y2 - $this->y1);
-    }
-
-    /**
-     * @param HtmlRenderer|PdfRenderer $renderer
-     *
-     * @return array{0:float,1:int,2:float}
-     */
-    public function getWidth($renderer): array
-    {
-        return [abs($this->x2 - $this->x1), 1, $this->getHeight($renderer)];
+        $this->elements[] = $element;
     }
 }

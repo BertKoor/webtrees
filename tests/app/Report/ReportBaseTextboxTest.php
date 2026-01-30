@@ -22,11 +22,11 @@ namespace Fisharebest\Webtrees\Report;
 use Fisharebest\Webtrees\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-#[CoversClass(ReportBaseTextbox::class)]
+#[CoversClass(ReportBaseTextBox::class)]
 class ReportBaseTextboxTest extends TestCase
 {
     public function testClass(): void
     {
-        self::assertTrue(class_exists(ReportBaseTextbox::class));
+        self::assertTrue(class_exists(ReportBaseTextBox::class));
     }
 }

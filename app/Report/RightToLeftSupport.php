@@ -73,15 +73,6 @@ class RightToLeftSupport
     /* Offset into the text. */
     private static int $posSpanStart;
 
-    /**
-     * This function strips &lrm; and &rlm; from the input string. It should be used for all
-     * text that has been passed through the PrintReady() function before that text is stored
-     * in the database. The database should NEVER contain these characters.
-     *
-     * @param string $inputText The string from which the &lrm; and &rlm; characters should be stripped
-     *
-     * @return string The input string, with &lrm; and &rlm; stripped
-     */
     private static function stripLrmRlm(string $inputText): string
     {
         return str_replace([
@@ -102,10 +93,6 @@ class RightToLeftSupport
     /**
      * This function encapsulates all texts in the input with <span dir='xxx'> and </span>
      * according to the directionality specified.
-     *
-     * @param string $inputText Raw input
-     *
-     * @return string The string with all texts encapsulated as required
      */
     public static function spanLtrRtl(string $inputText): string
     {
@@ -479,11 +466,6 @@ class RightToLeftSupport
             '+',
         ], $result);
 
-        //$result = strtr($result, [
-        //    self::END_RTL . self::START_LTR . '-' . self::END_LTR . self::START_RTL => '-',
-        //    self::END_RTL . self::START_LTR . '+' . self::END_LTR . self::START_RTL => '+',
-        //]);
-
         // Remove empty spans
         $result = str_replace([
             self::START_LTR . self::END_LTR,
@@ -494,7 +476,7 @@ class RightToLeftSupport
         // LTR text: <span dir="ltr"> text </span>
         // RTL text: <span dir="rtl"> text </span>
 
-        $result = str_replace([
+        return str_replace([
             self::START_LTR,
             self::END_LTR,
             self::START_RTL,
@@ -505,18 +487,11 @@ class RightToLeftSupport
             '<span dir="rtl">',
             '</span>',
         ], $result);
-
-        return $result;
     }
 
     /**
      * Wrap words that have an asterisk suffix in <u> and </u> tags.
      * This should underline starred names to show the preferred name.
-     *
-     * @param string $textSpan
-     * @param string $direction
-     *
-     * @return string
      */
     private static function starredName(string $textSpan, string $direction): string
     {
@@ -594,13 +569,6 @@ class RightToLeftSupport
         ];
     }
 
-    /**
-     * Insert <br> into current span
-     *
-     * @param string $result
-     *
-     * @return void
-     */
     private static function breakCurrentSpan(string &$result): void
     {
         // Interrupt the current span, insert that <br>, and then continue the current span
@@ -611,13 +579,6 @@ class RightToLeftSupport
         $result      .= $breakString;
     }
 
-    /**
-     * Begin current span
-     *
-     * @param string $result
-     *
-     * @return void
-     */
     private static function beginCurrentSpan(string &$result): void
     {
         if (self::$currentState === 'LTR') {
@@ -630,14 +591,6 @@ class RightToLeftSupport
         self::$posSpanStart = strlen($result);
     }
 
-    /**
-     * Finish current span
-     *
-     * @param string $result
-     * @param bool   $theEnd
-     *
-     * @return void
-     */
     private static function finishCurrentSpan(string &$result, bool $theEnd = false): void
     {
         $textSpan = substr($result, self::$posSpanStart);

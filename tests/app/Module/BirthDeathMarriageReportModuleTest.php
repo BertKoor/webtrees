@@ -28,14 +28,14 @@ use Fisharebest\Webtrees\Report\ReportBaseFootnote;
 use Fisharebest\Webtrees\Report\ReportBaseImage;
 use Fisharebest\Webtrees\Report\ReportBaseLine;
 use Fisharebest\Webtrees\Report\ReportBaseText;
-use Fisharebest\Webtrees\Report\ReportBaseTextbox;
+use Fisharebest\Webtrees\Report\ReportBaseTextBox;
 use Fisharebest\Webtrees\Report\ReportExpressionLanguageProvider;
 use Fisharebest\Webtrees\Report\ReportHtmlCell;
 use Fisharebest\Webtrees\Report\ReportHtmlFootnote;
 use Fisharebest\Webtrees\Report\ReportHtmlImage;
 use Fisharebest\Webtrees\Report\ReportHtmlLine;
 use Fisharebest\Webtrees\Report\ReportHtmlText;
-use Fisharebest\Webtrees\Report\ReportHtmlTextbox;
+use Fisharebest\Webtrees\Report\ReportHtmlTextBox;
 use Fisharebest\Webtrees\Report\ReportParserBase;
 use Fisharebest\Webtrees\Report\ReportParserGenerate;
 use Fisharebest\Webtrees\Report\ReportParserSetup;
@@ -59,14 +59,14 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(ReportBaseImage::class)]
 #[CoversClass(ReportBaseLine::class)]
 #[CoversClass(ReportBaseText::class)]
-#[CoversClass(ReportBaseTextbox::class)]
+#[CoversClass(ReportBaseTextBox::class)]
 #[CoversClass(ReportExpressionLanguageProvider::class)]
 #[CoversClass(ReportHtmlCell::class)]
 #[CoversClass(ReportHtmlFootnote::class)]
 #[CoversClass(ReportHtmlImage::class)]
 #[CoversClass(ReportHtmlLine::class)]
 #[CoversClass(ReportHtmlText::class)]
-#[CoversClass(ReportHtmlTextbox::class)]
+#[CoversClass(ReportHtmlTextBox::class)]
 #[CoversClass(ReportParserBase::class)]
 #[CoversClass(ReportParserGenerate::class)]
 #[CoversClass(ReportParserSetup::class)]

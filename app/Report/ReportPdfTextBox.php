@@ -28,14 +28,10 @@ use function preg_match;
 use function str_replace;
 use function trim;
 
-class ReportPdfTextBox extends ReportBaseTextbox
+class ReportPdfTextBox extends ReportBaseTextBox
 {
     /**
-     * PDF Text Box renderer
-     *
      * @param PdfRenderer $renderer
-     *
-     * @return void
      */
     public function render($renderer): void
     {

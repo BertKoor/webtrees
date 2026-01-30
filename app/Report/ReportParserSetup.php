@@ -59,11 +59,7 @@ class ReportParserSetup extends ReportParserBase
     }
 
     /**
-     * Handle <var var="" />
-     *
-     * @param array<string> $attrs
-     *
-     * @return void
+     * @param array<string,string> $attrs
      */
     protected function varStartHandler(array $attrs): void
     {
@@ -78,21 +74,11 @@ class ReportParserSetup extends ReportParserBase
         }
     }
 
-    /**
-     * Handle <title>
-     *
-     * @return void
-     */
     protected function titleStartHandler(): void
     {
         $this->text = '';
     }
 
-    /**
-     * Handle </title>
-     *
-     * @return void
-     */
     protected function titleEndHandler(): void
     {
         $this->data['title'] = $this->text;
@@ -100,11 +86,6 @@ class ReportParserSetup extends ReportParserBase
         $this->text = '';
     }
 
-    /**
-     * Handle </description>
-     *
-     * @return void
-     */
     protected function descriptionEndHandler(): void
     {
         $this->data['description'] = $this->text;
@@ -113,11 +94,7 @@ class ReportParserSetup extends ReportParserBase
     }
 
     /**
-     * Handle <input>
-     *
-     * @param array<string> $attrs
-     *
-     * @return void
+     * @param array<string,string> $attrs
      */
     protected function inputStartHandler(array $attrs): void
     {
@@ -149,11 +126,6 @@ class ReportParserSetup extends ReportParserBase
         }
     }
 
-    /**
-     * Handle </input>
-     *
-     * @return void
-     */
     protected function inputEndHandler(): void
     {
         $this->input['value'] = $this->text;

@@ -22,11 +22,7 @@ namespace Fisharebest\Webtrees\Report;
 class ReportHtmlLine extends ReportBaseLine
 {
     /**
-     * HTML line renderer
-     *
      * @param HtmlRenderer $renderer
-     *
-     * @return void
      */
     public function render($renderer): void
     {

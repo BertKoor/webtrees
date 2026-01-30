@@ -38,7 +38,7 @@ use function substr_count;
 class HtmlRenderer extends AbstractRenderer
 {
     // Cell padding
-    public float $cPadding = 2;
+    public float $cPadding = 2.0;
 
     // Cell height ratio
     public float $cellHeightRatio = 1.8;
@@ -68,24 +68,19 @@ class HtmlRenderer extends AbstractRenderer
 
     // Largest Font Height is used by TextBox etc.
     //
-    // Use this to calculate a the text height.
+    // Use this to calculate the text height.
     // This makes sure that the text fits into the cell/box when different font sizes are used
-    public float $largestFontHeight = 0;
+    public float $largestFontHeight = 0.0;
 
     // Keep track of the highest Y position
     // Used with Header div / Body div / Footer div / "addpage" / The bottom of the last image etc.
-    public float $maxY = 0;
+    public float $maxY = 0.0;
 
     /**
      * @var ReportHtmlFootnote[] Array of elements in the footer notes
      */
     public array $printedfootnotes = [];
 
-    /**
-     * HTML Setup - ReportHtml
-     *
-     * @return void
-     */
     public function setup(): void
     {
         parent::setup();
@@ -115,11 +110,6 @@ class HtmlRenderer extends AbstractRenderer
         }
     }
 
-    /**
-     * Generate footnotes
-     *
-     * @return void
-     */
     public function footnotes(): void
     {
         $this->currentStyle = '';
@@ -130,14 +120,8 @@ class HtmlRenderer extends AbstractRenderer
         }
     }
 
-    /**
-     * Run the report.
-     *
-     * @return void
-     */
     public function run(): void
     {
-        // Setting up the styles
         echo '<style>';
         echo '#bodydiv { font: 10px sans-serif;}';
         foreach ($this->styles as $class => $style) {
@@ -213,49 +197,11 @@ class HtmlRenderer extends AbstractRenderer
         echo '<div id="footermargin" style="position: relative; top: auto; height: ', $this->footer_margin, 'pt;width:', $this->noMarginWidth, 'pt;"></div>';
     }
 
-    /**
-     * Create a new Cell object.
-     *
-     * @param float  $width   cell width (expressed in points)
-     * @param float  $height  cell height (expressed in points)
-     * @param string $border  Border style
-     * @param string $align   Text alignement
-     * @param string $bgcolor Background color code
-     * @param string $style   The name of the text style
-     * @param int    $ln      Indicates where the current position should go after the call
-     * @param float  $top     Y-position
-     * @param float  $left    X-position
-     * @param bool   $fill    Indicates if the cell background must be painted (1) or transparent (0). Default value: 1
-     * @param int    $stretch Stretch character mode
-     * @param string $bocolor Border color
-     * @param string $tcolor  Text color
-     * @param bool   $reseth
-     *
-     * @return ReportBaseCell
-     */
-    public function createCell(float $width, float $height, string $border, string $align, string $bgcolor, string $style, int $ln, float $top, float $left, bool $fill, int $stretch, string $bocolor, string $tcolor, bool $reseth): ReportBaseCell
+    public function createCell(float $width, float $height, string $border, string $align, string $bgcolor, string $style, int $ln, float $top, float $left, bool $fill, int $stretch, string $bocolor, string $tcolor, bool $reseth): ReportHtmlCell
     {
         return new ReportHtmlCell($width, $height, $border, $align, $bgcolor, $style, $ln, $top, $left, $fill, $stretch, $bocolor, $tcolor, $reseth);
     }
 
-    /**
-     * Create a new TextBox object.
-     *
-     * @param float  $width   Text box width
-     * @param float  $height  Text box height
-     * @param bool   $border
-     * @param string $bgcolor Background color code in HTML
-     * @param bool   $newline
-     * @param float  $left
-     * @param float  $top
-     * @param bool   $pagecheck
-     * @param string $style
-     * @param bool   $fill
-     * @param bool   $padding
-     * @param bool   $reseth
-     *
-     * @return ReportBaseTextbox
-     */
     public function createTextBox(
         float $width,
         float $height,
@@ -269,66 +215,25 @@ class HtmlRenderer extends AbstractRenderer
         bool $fill,
         bool $padding,
         bool $reseth
-    ): ReportBaseTextbox {
-        return new ReportHtmlTextbox($width, $height, $border, $bgcolor, $newline, $left, $top, $pagecheck, $style, $fill, $padding, $reseth);
+    ): ReportHtmlTextBox {
+        return new ReportHtmlTextBox($width, $height, $border, $bgcolor, $newline, $left, $top, $pagecheck, $style, $fill, $padding, $reseth);
     }
 
-    /**
-     * Create a text element.
-     *
-     * @param string $style
-     * @param string $color
-     *
-     * @return ReportBaseText
-     */
-    public function createText(string $style, string $color): ReportBaseText
+    public function createText(string $style, string $color): ReportHtmlText
     {
         return new ReportHtmlText($style, $color);
     }
 
-    /**
-     * Create a new Footnote object.
-     *
-     * @param string $style Style name
-     *
-     * @return ReportBaseFootnote
-     */
-    public function createFootnote(string $style): ReportBaseFootnote
+    public function createFootnote(string $style): ReportHtmlFootnote
     {
         return new ReportHtmlFootnote($style);
     }
 
-    /**
-     * Create a new image object.
-     *
-     * @param string $file  Filename
-     * @param float  $x
-     * @param float  $y
-     * @param float  $w     Image width
-     * @param float  $h     Image height
-     * @param string $align L:left, C:center, R:right or empty to use x/y
-     * @param string $ln    T:same line, N:next line
-     *
-     * @return ReportBaseImage
-     */
-    public function createImage(string $file, float $x, float $y, float $w, float $h, string $align, string $ln): ReportBaseImage
+    public function createImage(string $file, float $x, float $y, float $w, float $h, string $align, string $ln): ReportHtmlImage
     {
         return new ReportHtmlImage($file, $x, $y, $w, $h, $align, $ln);
     }
 
-    /**
-     * Create a new image object from Media Object.
-     *
-     * @param MediaFile $media_file
-     * @param float     $x
-     * @param float     $y
-     * @param float     $w     Image width
-     * @param float     $h     Image height
-     * @param string    $align L:left, C:center, R:right or empty to use x/y
-     * @param string    $ln    T:same line, N:next line
-     *
-     * @return ReportBaseImage
-     */
     public function createImageFromObject(
         MediaFile $media_file,
         float $x,
@@ -337,39 +242,17 @@ class HtmlRenderer extends AbstractRenderer
         float $h,
         string $align,
         string $ln
-    ): ReportBaseImage {
+    ): ReportHtmlImage {
         return new ReportHtmlImage($media_file->imageUrl((int) $w, (int) $h, 'crop'), $x, $y, $w, $h, $align, $ln);
     }
 
-    /**
-     * Create a line.
-     *
-     * @param float $x1
-     * @param float $y1
-     * @param float $x2
-     * @param float $y2
-     *
-     * @return ReportBaseLine
-     */
-    public function createLine(float $x1, float $y1, float $x2, float $y2): ReportBaseLine
+    public function createLine(float $x1, float $y1, float $x2, float $y2): ReportHtmlLine
     {
         return new ReportHtmlLine($x1, $y1, $x2, $y2);
     }
 
     /**
-     * Clear the Header
-     *
-     * @return void
-     */
-    public function clearHeader(): void
-    {
-        $this->headerElements = [];
-    }
-
-    /**
      * Update the Page Number and set a new Y if max Y is larger - ReportHtml
-     *
-     * @return void
      */
     public function addPage(): void
     {
@@ -378,7 +261,7 @@ class HtmlRenderer extends AbstractRenderer
         // Add a little margin to max Y "between pages"
         $this->maxY += 10;
 
-        // If Y is still heigher by any reason...
+        // If Y is still higher for any reason...
         if ($this->maxY < $this->Y) {
             // ... update max Y
             $this->maxY = $this->Y;
@@ -390,10 +273,6 @@ class HtmlRenderer extends AbstractRenderer
 
     /**
      * Uppdate max Y to keep track it in case of a pagebreak - ReportHtml
-     *
-     * @param float $y
-     *
-     * @return void
      */
     public function addMaxY(float $y): void
     {
@@ -402,21 +281,14 @@ class HtmlRenderer extends AbstractRenderer
         }
     }
 
-    /**
-     * Checks the Footnote and numbers them - ReportHtml
-     *
-     * @param ReportHtmlFootnote $footnote
-     *
-     * @return ReportHtmlFootnote|bool object if already numbered, false otherwise
-     */
-    public function checkFootnote(ReportHtmlFootnote $footnote)
+    public function checkFootnote(ReportHtmlFootnote $footnote): ReportHtmlFootnote|false
     {
         $ct  = count($this->printedfootnotes);
         $i   = 0;
         $val = $footnote->getValue();
         while ($i < $ct) {
             if ($this->printedfootnotes[$i]->getValue() === $val) {
-                // If this footnote already exist then set up the numbers for this object
+                // If this footnote already exists, then set up the numbers for this object
                 $footnote->setNum($i + 1);
                 $footnote->setAddlink((string) ($i + 1));
 
@@ -432,13 +304,6 @@ class HtmlRenderer extends AbstractRenderer
         return false;
     }
 
-    /**
-     * Count the number of lines - ReportHtml
-     *
-     * @param string $str
-     *
-     * @return int Number of lines. 0 if empty line
-     */
     public function countLines(string $str): int
     {
         if ($str === '') {
@@ -448,21 +313,11 @@ class HtmlRenderer extends AbstractRenderer
         return substr_count($str, "\n") + 1;
     }
 
-    /**
-     * Get the current style.
-     *
-     * @return string
-     */
     public function getCurrentStyle(): string
     {
         return $this->currentStyle;
     }
 
-    /**
-     * Get the current style height.
-     *
-     * @return float
-     */
     public function getCurrentStyleHeight(): float
     {
         if (empty($this->currentStyle)) {
@@ -473,13 +328,6 @@ class HtmlRenderer extends AbstractRenderer
         return $style['size'];
     }
 
-    /**
-     * Get the current footnotes height.
-     *
-     * @param float $cellWidth
-     *
-     * @return float
-     */
     public function getFootnotesHeight(float $cellWidth): float
     {
         $h = 0;
@@ -490,33 +338,11 @@ class HtmlRenderer extends AbstractRenderer
         return $h;
     }
 
-    /**
-     * Get the maximum width from current position to the margin - ReportHtml
-     *
-     * @return float
-     */
     public function getRemainingWidth(): float
     {
         return $this->noMarginWidth - $this->X;
     }
 
-    /**
-     * Get the page height.
-     *
-     * @return float
-     */
-    public function getPageHeight(): float
-    {
-        return $this->page_height - $this->top_margin;
-    }
-
-    /**
-     * Get the width of a string.
-     *
-     * @param string $text
-     *
-     * @return float
-     */
     public function getStringWidth(string $text): float
     {
         $style = $this->getStyle($this->currentStyle);
@@ -524,13 +350,6 @@ class HtmlRenderer extends AbstractRenderer
         return mb_strlen($text) * $style['size'] / 2;
     }
 
-    /**
-     * Get a text height in points - ReportHtml
-     *
-     * @param string $str
-     *
-     * @return float
-     */
     public function getTextCellHeight(string $str): float
     {
         // Count the number of lines to calculate the height
@@ -540,69 +359,31 @@ class HtmlRenderer extends AbstractRenderer
         return ceil($this->getCurrentStyleHeight() * $this->cellHeightRatio * $nl);
     }
 
-    /**
-     * Get the current X position - ReportHtml
-     *
-     * @return float
-     */
     public function getX(): float
     {
         return $this->X;
     }
 
-    /**
-     * Get the current Y position - ReportHtml
-     *
-     * @return float
-     */
     public function getY(): float
     {
         return $this->Y;
     }
 
-    /**
-     * Get the current page number - ReportHtml
-     *
-     * @return int
-     */
     public function pageNo(): int
     {
         return $this->pageN;
     }
 
-    /**
-     * Set the current style.
-     *
-     * @param string $s
-     *
-     * @void
-     */
     public function setCurrentStyle(string $s): void
     {
         $this->currentStyle = $s;
     }
 
-    /**
-     * Set the X position - ReportHtml
-     *
-     * @param float $x
-     *
-     * @return void
-     */
     public function setX(float $x): void
     {
         $this->X = $x;
     }
 
-    /**
-     * Set the Y position - ReportHtml
-     *
-     * Also updates Max Y position
-     *
-     * @param float $y
-     *
-     * @return void
-     */
     public function setY(float $y): void
     {
         $this->Y = $y;
@@ -611,16 +392,6 @@ class HtmlRenderer extends AbstractRenderer
         }
     }
 
-    /**
-     * Set the X and Y position - ReportHtml
-     *
-     * Also updates Max Y position
-     *
-     * @param float $x
-     * @param float $y
-     *
-     * @return void
-     */
     public function setXy(float $x, float $y): void
     {
         $this->setX($x);
@@ -628,12 +399,7 @@ class HtmlRenderer extends AbstractRenderer
     }
 
     /**
-     * Wrap text - ReportHtml
-     *
-     * @param string $str   Text to wrap
-     * @param float  $width Width in points the text has to fit into
-     *
-     * @return string
+     * @param float $width Width in points the text has to fit into
      */
     public function textWrap(string $str, float $width): string
     {
@@ -648,11 +414,6 @@ class HtmlRenderer extends AbstractRenderer
 
     /**
      * Wrap text, similar to the PHP wordwrap() function.
-     *
-     * @param string $string
-     * @param int    $width
-     *
-     * @return string
      */
     private function utf8WordWrap(string $string, int $width): string
     {
@@ -672,7 +433,7 @@ class HtmlRenderer extends AbstractRenderer
                 }
                 $spacepos = strrpos($sub, ' ');
                 if ($spacepos === false) {
-                    // No space on line?
+                    // No space on the line?
                     $out .= $sub . "\n";
                     $string = mb_substr($string, mb_strlen($sub));
                 } else {
@@ -686,15 +447,6 @@ class HtmlRenderer extends AbstractRenderer
         return $out;
     }
 
-    /**
-     * Write text - ReportHtml
-     *
-     * @param string $text  Text to print
-     * @param string $color HTML RGB color code (Ex: #001122)
-     * @param bool   $useclass
-     *
-     * @return void
-     */
     public function write(string $text, string $color = '', bool $useclass = true): void
     {
         $style    = $this->getStyle($this->getCurrentStyle());

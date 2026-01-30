@@ -27,11 +27,7 @@ use function substr_count;
 class ReportHtmlFootnote extends ReportBaseFootnote
 {
     /**
-     * HTML Footnotes number renderer
-     *
      * @param HtmlRenderer $renderer
-     *
-     * @return void
      */
     public function render($renderer): void
     {
@@ -42,12 +38,7 @@ class ReportHtmlFootnote extends ReportBaseFootnote
     }
 
     /**
-     * Write the Footnote text
-     * Uses style name "footnote" by default
-     *
      * @param HtmlRenderer $renderer
-     *
-     * @return void
      */
     public function renderFootnote($renderer): void
     {
@@ -57,13 +48,7 @@ class ReportHtmlFootnote extends ReportBaseFootnote
 
         $temptext = str_replace('#PAGENUM#', (string) $renderer->pageNo(), $this->text);
         // underline «title» part of Source item
-        $temptext = str_replace([
-            '«',
-            '»',
-        ], [
-            '<u>',
-            '</u>',
-        ], $temptext);
+        $temptext = str_replace(['«', '»',], ['<u>', '</u>',], $temptext);
         echo '<div><a id="footnote', $this->num, '"></a>';
         $renderer->write($this->num . '. ' . $temptext);
         echo '</div>';
@@ -71,14 +56,6 @@ class ReportHtmlFootnote extends ReportBaseFootnote
         $renderer->setXy(0, $renderer->getY() + $this->getFootnoteHeight($renderer));
     }
 
-    /**
-     * Calculates the Footnotes height
-     *
-     * @param HtmlRenderer $renderer
-     * @param float        $cellWidth The width of the cell to use it for text wrapping
-     *
-     * @return float     Footnote height in points
-     */
     public function getFootnoteHeight(HtmlRenderer $renderer, float $cellWidth = 0): float
     {
         if ($renderer->getCurrentStyle() !== $this->styleName) {

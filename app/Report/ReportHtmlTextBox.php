@@ -26,14 +26,10 @@ use function ksort;
 use function str_replace;
 use function trim;
 
-class ReportHtmlTextbox extends ReportBaseTextbox
+class ReportHtmlTextBox extends ReportBaseTextBox
 {
     /**
-     * Render the elements.
-     *
      * @param HtmlRenderer $renderer
-     *
-     * @return void
      */
     public function render($renderer): void
     {
@@ -65,7 +61,7 @@ class ReportHtmlTextbox extends ReportBaseTextbox
                         $lastelement   = $element;
                     }
                 } elseif ($element instanceof ReportHtmlFootnote) {
-                    // Check if the Footnote has been set with it’s link number
+                    // Check if the Footnote has been set with its link number
                     $renderer->checkFootnote($element);
                     // Save first the last element if any
                     if (!empty($lastelement)) {

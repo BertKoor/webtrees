@@ -22,11 +22,7 @@ namespace Fisharebest\Webtrees\Report;
 class ReportHtmlImage extends ReportBaseImage
 {
     /**
-     * Image renderer
-     *
      * @param HtmlRenderer $renderer
-     *
-     * @return void
      */
     public function render($renderer): void
     {
@@ -80,8 +76,6 @@ class ReportHtmlImage extends ReportBaseImage
      * so we add a bit bottom space between the images
      *
      * @param HtmlRenderer $renderer
-     *
-     * @return float
      */
     public function getHeight($renderer): float
     {

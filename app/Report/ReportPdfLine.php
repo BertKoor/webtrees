@@ -22,11 +22,7 @@ namespace Fisharebest\Webtrees\Report;
 class ReportPdfLine extends ReportBaseLine
 {
     /**
-     * PDF line renderer
-     *
      * @param PdfRenderer $renderer
-     *
-     * @return void
      */
     public function render($renderer): void
     {

@@ -28,11 +28,7 @@ use function substr_count;
 class ReportPdfFootnote extends ReportBaseFootnote
 {
     /**
-     * PDF Footnotes number renderer
-     *
      * @param PdfRenderer $renderer
-     *
-     * @return void
      */
     public function render($renderer): void
     {
@@ -41,12 +37,7 @@ class ReportPdfFootnote extends ReportBaseFootnote
     }
 
     /**
-     * Write the Footnote text
-     * Uses style name "footnote" by default
-     *
      * @param PdfRenderer $renderer
-     *
-     * @return void
      */
     public function renderFootnote($renderer): void
     {
@@ -59,27 +50,17 @@ class ReportPdfFootnote extends ReportBaseFootnote
         // Print first the source number
         // working
         if ($renderer->tcpdf->getRTL()) {
-            $renderer->tcpdf->writeHTML('<span> .' . $this->num . '</span>', false, false, false, false, '');
+            $renderer->tcpdf->writeHTML('<span> .' . $this->num . '</span>', false);
         } else {
             $temptext = '<span>' . $this->num . '. </span>' . $temptext;
         }
         // underline «title» part of Source item
-        $temptext = str_replace([
-            '«',
-            '»',
-        ], [
-            '<u>',
-            '</u>',
-        ], $temptext);
-        $renderer->tcpdf->writeHTML($temptext, true, false, true, false, '');
+        $temptext = str_replace(['«', '»',], ['<u>', '</u>',], $temptext);
+        $renderer->tcpdf->writeHTML($temptext, true, false, true);
     }
 
     /**
-     * Returns the height in points of the Footnote element
-     *
      * @param PdfRenderer $renderer
-     *
-     * @return float $h
      */
     public function getFootnoteHeight(PdfRenderer $renderer): float
     {
