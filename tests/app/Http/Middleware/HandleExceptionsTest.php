@@ -37,12 +37,12 @@ class HandleExceptionsTest extends TestCase
 
     public function testMiddleware(): void
     {
-        $tree_service = $this->createMock(TreeService::class);
+        $tree_service = self::createStub(TreeService::class);
 
-        $handler = $this->createMock(RequestHandlerInterface::class);
+        $handler = self::createStub(RequestHandlerInterface::class);
         $handler->method('handle')->willThrowException(new HttpServerErrorException('eek'));
 
-        $module_service = $this->createMock(ModuleService::class);
+        $module_service = self::createStub(ModuleService::class);
         $module_service->method('findByInterface')->willReturn(new Collection());
         $module_service->method('findByComponent')->willReturn(new Collection());
         Registry::container()->set(ModuleService::class, $module_service);

@@ -86,7 +86,6 @@ use function xml_get_current_line_number;
 use function xml_get_error_code;
 use function xml_parse;
 use function xml_parser_create;
-use function xml_parser_free;
 use function xml_parser_set_option;
 use function xml_set_character_data_handler;
 use function xml_set_element_handler;
@@ -160,7 +159,7 @@ class ReportParserGenerate extends ReportParserBase
     /** The current generational level */
     private int $generation = 1;
 
-    /** @var array<static|GedcomRecord> Source data for processing lists */
+    /** @var array<GedcomRecord> Source data for processing lists */
     private array $list = [];
 
     /** Number of items in lists */
@@ -979,7 +978,7 @@ class ReportParserGenerate extends ReportParserBase
                 if (!empty($attrs['truncate'])) {
                     $name = Str::limit($name, (int) $attrs['truncate'], I18N::translate('…'));
                 } else {
-                    $addname = (string) $record->alternateName();
+                    $addname = $record->alternateName() ?? '';
                     $addname = strip_tags($addname);
                     if (!empty($addname)) {
                         $name .= ' ' . $addname;
@@ -1048,7 +1047,7 @@ class ReportParserGenerate extends ReportParserBase
                     $value = str_replace('(', '<br>(', $value);
                     $value = str_replace('<span dir="ltr"><br>', '<br><span dir="ltr">', $value);
                     $value = str_replace('<span dir="rtl"><br>', '<br><span dir="rtl">', $value);
-                    if (substr($value, 0, 4) === '<br>') {
+                    if (str_starts_with($value, '<br>')) {
                         $value = substr($value, 4);
                     }
                 }
@@ -1218,7 +1217,6 @@ class ReportParserGenerate extends ReportParserBase
                         xml_get_current_line_number($repeat_parser)
                     ));
                 }
-                xml_parser_free($repeat_parser);
             }
             // Restore original values
             $this->gedrec = $oldgedrec;
@@ -1426,7 +1424,7 @@ class ReportParserGenerate extends ReportParserBase
                         xml_get_current_line_number($repeat_parser)
                     ));
                 }
-                xml_parser_free($repeat_parser);
+
                 $i++;
             }
             // Restore original values
@@ -2335,7 +2333,6 @@ class ReportParserGenerate extends ReportParserBase
                             xml_get_current_line_number($repeat_parser)
                         ));
                     }
-                    xml_parser_free($repeat_parser);
                 } else {
                     $this->list_private++;
                 }
@@ -2560,7 +2557,6 @@ class ReportParserGenerate extends ReportParserBase
                 if (!xml_parse($repeat_parser, $reportxml, true)) {
                     throw new DomainException(sprintf('RelativesEHandler XML error: %s at line %d', xml_error_string(xml_get_error_code($repeat_parser)), xml_get_current_line_number($repeat_parser)));
                 }
-                xml_parser_free($repeat_parser);
             }
             // Clean up the list array
             $this->list   = [];

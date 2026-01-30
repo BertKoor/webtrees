@@ -35,10 +35,10 @@ class SiteLogsPageTest extends TestCase
     {
         $request = self::createRequest();
 
-        $tree_service = $this->createMock(TreeService::class);
+        $tree_service = self::createStub(TreeService::class);
         $tree_service->method('all')->willReturn(new Collection());
 
-        $user_service = $this->createMock(UserService::class);
+        $user_service = self::createStub(UserService::class);
         $user_service->method('all')->willReturn(new Collection());
 
         $handler  = new SiteLogsPage($tree_service, $user_service);

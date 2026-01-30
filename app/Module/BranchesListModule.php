@@ -26,6 +26,7 @@ use Fisharebest\Webtrees\DB;
 use Fisharebest\Webtrees\Elements\PedigreeLinkageType;
 use Fisharebest\Webtrees\Family;
 use Fisharebest\Webtrees\GedcomRecord;
+use Fisharebest\Webtrees\Http\Middleware\AuthNotRobot;
 use Fisharebest\Webtrees\I18N;
 use Fisharebest\Webtrees\Individual;
 use Fisharebest\Webtrees\Registry;
@@ -80,7 +81,8 @@ class BranchesListModule extends AbstractModule implements ModuleListInterface, 
     {
         Registry::routeFactory()->routeMap()
             ->get(static::class, static::ROUTE_URL, $this)
-            ->allows(RequestMethodInterface::METHOD_POST);
+            ->allows(RequestMethodInterface::METHOD_POST)
+            ->extras(['middleware' => [AuthNotRobot::class]]);
     }
 
     public function title(): string
@@ -240,7 +242,7 @@ class BranchesListModule extends AbstractModule implements ModuleListInterface, 
                     $ancestors[$sosa * 2 + 1] = $family->wife();
                 }
             }
-        } while (next($ancestors));
+        } while (next($ancestors) !== false);
 
         return $ancestors;
     }
@@ -413,7 +415,7 @@ class BranchesListModule extends AbstractModule implements ModuleListInterface, 
                         $sosa_html  = '';
                     }
                     $marriage_year = $family->getMarriageYear();
-                    if ($marriage_year) {
+                    if ($marriage_year !== 0) {
                         $fam_html .= ' <a href="' . e($family->url()) . '" title="' . strip_tags($family->getMarriageDate()->display()) . '"><i class="icon-rings"></i>' . $marriage_year . '</a>';
                     } elseif ($family->facts(['MARR'])->isNotEmpty()) {
                         $fam_html .= ' <a href="' . e($family->url()) . '" title="' . I18N::translate('Marriage') . '"><i class="icon-rings"></i></a>';

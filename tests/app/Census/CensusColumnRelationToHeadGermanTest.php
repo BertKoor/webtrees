@@ -30,9 +30,9 @@ class CensusColumnRelationToHeadGermanTest extends TestCase
 {
     public function testNull(): void
     {
-        $individual = $this->createMock(Individual::class);
+        $individual = self::createStub(Individual::class);
 
-        $census = $this->createMock(CensusInterface::class);
+        $census = self::createStub(CensusInterface::class);
 
         $column = new CensusColumnRelationToHeadGerman($census, '', '');
 

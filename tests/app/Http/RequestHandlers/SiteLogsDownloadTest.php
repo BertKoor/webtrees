@@ -33,16 +33,16 @@ class SiteLogsDownloadTest extends TestCase
     {
         $request = self::createRequest();
 
-        $query1 = $this->createMock(Builder::class);
-        $query2 = $this->createMock(Builder::class);
-        $rows1  = $this->createMock(Collection::class);
-        $rows2  = $this->createMock(Collection::class);
+        $query1 = self::createStub(Builder::class);
+        $query2 = self::createStub(Builder::class);
+        $rows1  = self::createStub(Collection::class);
+        $rows2  = self::createStub(Collection::class);
         $query1->method('orderBy')->willReturn($query2);
         $query2->method('get')->willReturn($rows1);
         $rows1->method('map')->willReturn($rows2);
         $rows2->method('implode')->willReturn('foo,bar');
 
-        $site_logs_service = $this->createMock(SiteLogsService::class);
+        $site_logs_service = self::createStub(SiteLogsService::class);
         $site_logs_service->method('logsQuery')->willReturn($query1);
 
         $handler  = new SiteLogsDownload($site_logs_service);

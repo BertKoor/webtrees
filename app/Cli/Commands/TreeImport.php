@@ -139,7 +139,7 @@ final class TreeImport extends AbstractCommand
             $progress_bar->setRedrawFrequency(1);
             $progress_bar->start();
 
-            foreach ($queries as $name => $query) {
+            foreach ($queries as $query) {
                 $query->delete();
                 $progress_bar->advance();
             }
@@ -164,7 +164,7 @@ final class TreeImport extends AbstractCommand
             while ($bytes_loaded < $total_bytes) {
                 $tmp = fread($fp, 8192);
                 $buffer .= $tmp;
-                $bytes_loaded += strlen($buffer);
+                $bytes_loaded += strlen($tmp);
 
                 $records = preg_split('/[\r\n]+(?=0)/', $buffer);
                 $buffer = array_pop($records);

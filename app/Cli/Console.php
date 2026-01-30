@@ -36,12 +36,12 @@ final class Console extends Application
         Commands\SiteOffline::class,
         Commands\SiteOnline::class,
         Commands\SiteSetting::class,
-        //Commands\TreeCreate::class,
+        Commands\TreeEdit::class,
         Commands\TreeExport::class,
         Commands\TreeImport::class,
         Commands\TreeList::class,
         Commands\TreeSetting::class,
-        //Commands\UserCreate::class,
+        Commands\UserEdit::class,
         Commands\UserList::class,
         Commands\UserSetting::class,
         Commands\UserTreeSetting::class,
@@ -55,7 +55,7 @@ final class Console extends Application
     public function loadCommands(): self
     {
         foreach (self::COMMANDS as $command) {
-            $this->add(Registry::container()->get($command));
+            $this->addCommand(command: Registry::container()->get($command));
         }
 
         return $this;

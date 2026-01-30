@@ -188,13 +188,13 @@ class GedcomImportService
                     while (str_contains($data, '  ')) {
                         $data = strtr($data, ['  ' => ' ']);
                     }
-                    $newrec .= ($newrec !== '' ? "\n" : '') . $level . ' ' . ($level === '0' && $xref !== '' ? $xref . ' ' : '') . $tag . ($data === '' ? '' : ' ' . $data);
+                    $newrec .= ($newrec ? "\n" : '') . $level . ' ' . ($level === '0' && $xref ? $xref . ' ' : '') . $tag . ($data === '' && $tag !== 'NOTE' ? '' : ' ' . $data);
                     break;
                 case 'NOTE':
                 case 'TEXT':
                 case 'DATA':
                 case 'CONT':
-                    $newrec .= ($newrec !== '' ? "\n" : '') . $level . ' ' . ($level === '0' && $xref !== '' ? $xref . ' ' : '') . $tag . ($data === '' ? '' : ' ' . $data);
+                    $newrec .= ($newrec ? "\n" : '') . $level . ' ' . ($level === '0' && $xref ? $xref . ' ' : '') . $tag . ($data === '' && $tag !== 'NOTE' ? '' : ' ' . $data);
                     break;
                 case 'FILE':
                     // Strip off the user-defined path prefix
@@ -205,7 +205,7 @@ class GedcomImportService
                     // convert backslashes in filenames to forward slashes
                     $data = preg_replace("/\\\\/", '/', $data);
 
-                    $newrec .= ($newrec !== '' ? "\n" : '') . $level . ' ' . ($level === '0' && $xref !== '' ? $xref . ' ' : '') . $tag . ($data === '' ? '' : ' ' . $data);
+                    $newrec .= ($newrec ? "\n" : '') . $level . ' ' . ($level === '0' && $xref ? $xref . ' ' : '') . $tag . ($data === '' && $tag !== 'NOTE' ? '' : ' ' . $data);
                     break;
                 case 'CONC':
                     // Merge CONC lines, to simplify access later on.
@@ -249,6 +249,9 @@ class GedcomImportService
             $tree->setPreference('imported', '1');
             $type = 'TRLR';
             $xref = 'TRLR'; // For records without an XREF, use the type as a pseudo XREF.
+        } elseif (preg_match('/^0 (_PTF|_PTE|_STF|_STE|_PLAC|_PEG|LABL) @/', $gedrec) === 1) {
+            // MacFamilyTree creates these records with duplicate XREFs.  We can't import these. See #5125
+            return;
         } elseif (str_starts_with($gedrec, '0 _PLAC_DEFN')) {
             $this->importLegacyPlacDefn($gedrec);
 

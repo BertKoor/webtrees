@@ -74,8 +74,9 @@ class MediaFileService
         '_DAV',
     ];
 
-    public function __construct(private PhpService $php_service)
-    {
+    public function __construct(
+        private readonly PhpService $php_service,
+    ) {
     }
 
     /**
@@ -272,21 +273,22 @@ class MediaFileService
      */
     public function allFilesInDatabase(string $media_folder, bool $subfolders): Collection
     {
+        $path = DB::concat(['setting_value', 'multimedia_file_refn']);
+
         $query = DB::table('media_file')
             ->join('gedcom_setting', 'gedcom_id', '=', 'm_file')
             ->where('setting_name', '=', 'MEDIA_DIRECTORY')
-            //->where('multimedia_file_refn', 'LIKE', '%/%')
             ->where('multimedia_file_refn', 'NOT LIKE', 'http://%')
             ->where('multimedia_file_refn', 'NOT LIKE', 'https://%')
-            ->where(new Expression('setting_value || multimedia_file_refn'), 'LIKE', $media_folder . '%');
+            ->where(new Expression($path), 'LIKE', $media_folder . '%');
 
         if (!$subfolders) {
-            $query->where(new Expression('setting_value || multimedia_file_refn'), 'NOT LIKE', $media_folder . '%/%');
+            $query->where(new Expression($path), 'NOT LIKE', $media_folder . '%/%');
         }
 
         return $query
-            ->orderBy(new Expression('setting_value || multimedia_file_refn'))
-            ->pluck(new Expression('setting_value || multimedia_file_refn'));
+            ->orderBy(new Expression($path))
+            ->pluck(new Expression($path . ' AS value'));
     }
 
     /**
@@ -338,7 +340,7 @@ class MediaFileService
                     ->where('setting_name', '=', 'MEDIA_DIRECTORY');
             })
             ->where('gedcom.gedcom_id', '>', '0')
-            ->pluck(new Expression("COALESCE(setting_value, 'media/')"))
+            ->pluck(new Expression("COALESCE(setting_value, 'media/') AS value"))
             ->uniqueStrict();
 
         $disk_folders = new Collection($media_roots);
