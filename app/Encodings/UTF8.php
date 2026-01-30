@@ -703,6 +703,8 @@ class UTF8 extends AbstractEncoding
     public const string LATIN_SMALL_LETTER_Y_WITH_TILDE                       = "\u{1EF9}";
     public const string ZERO_WIDTH_NON_JOINER                                 = "\u{200C}";
     public const string ZERO_WIDTH_JOINER                                     = "\u{200D}";
+    public const string LEFT_TO_RIGHT_MARK                                    = "\u{200E}";
+    public const string RIGHT_TO_LEFT_MARK                                    = "\u{200F}";
     public const string EN_DASH                                               = "\u{2013}";
     public const string EM_DASH                                               = "\u{2014}";
     public const string DOUBLE_LOW_LINE                                       = "\u{2017}";
@@ -716,6 +718,11 @@ class UTF8 extends AbstractEncoding
     public const string DOUBLE_DAGGER                                         = "\u{2021}";
     public const string BULLET                                                = "\u{2022}";
     public const string HORIZONTAL_ELLIPSIS                                   = "\u{2026}";
+    public const string LEFT_TO_RIGHT_EMBEDDING                               = "\u{202A}";
+    public const string RIGHT_TO_LEFT_EMBEDDING                               = "\u{202B}";
+    public const string POP_DIRECTIONAL_FORMATTING                            = "\u{202C}";
+    public const string LEFT_TO_RIGHT_OVERRIDE                                = "\u{202D}";
+    public const string RIGHT_TO_LEFT_OVERRIDE                                = "\u{202E}";
     public const string PER_MILLE_SIGN                                        = "\u{2030}";
     public const string SINGLE_LEFT_POINTING_ANGLE_QUOTATION_MARK             = "\u{2039}";
     public const string SINGLE_RIGHT_POINTING_ANGLE_QUOTATION_MARK            = "\u{203A}";
