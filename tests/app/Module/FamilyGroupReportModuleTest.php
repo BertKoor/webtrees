@@ -153,7 +153,10 @@ class FamilyGroupReportModuleTest extends TestCase
             'sources'  => $sources,
         ];
 
-        new ReportParserSetup($xml);
+        $parser = new ReportParserSetup($xml);
+        $this->assertNotEmpty($parser->reportDescription());
+        $this->assertNotEmpty($parser->reportTitle());
+        $this->assertNotEmpty($parser->reportInputs());
 
         Site::setPreference('INDEX_DIRECTORY', 'tests/data/');
 
