@@ -664,15 +664,6 @@ class ReportParserGenerate extends ReportParserBase
                         $value = substr($value, 4);
                     }
                 }
-                $tmp = explode(':', $tag);
-                if (in_array(end($tmp), ['NOTE', 'TEXT'], true)) {
-                    if ($this->tree->getPreference('FORMAT_TEXT') === 'markdown') {
-                        $value = strip_tags(Registry::markdownFactory()->markdown($value, $this->tree), ['br']);
-                    } else {
-                        $value = strip_tags(Registry::markdownFactory()->autolink($value, $this->tree), ['br']);
-                    }
-                    $value = strtr($value, [MarkdownFactory::BREAK => ' ']);
-                }
 
                 if (!empty($attrs['truncate'])) {
                     $value = Str::limit($value, (int) $attrs['truncate'], I18N::translate('…'));
