@@ -49,7 +49,6 @@ use function addcslashes;
 use function addslashes;
 use function array_pop;
 use function array_shift;
-use function assert;
 use function count;
 use function end;
 use function explode;
@@ -145,7 +144,7 @@ class ReportParserGenerate extends ReportParserBase
 
     private int $generation = 1;
 
-    /** @var array<GedcomRecord> Source data for processing lists */
+    /** @var array<GedcomRecord&object{generation:int}> Source data for processing lists */
     private array $list = [];
 
     /** Number of items in lists */
@@ -159,8 +158,8 @@ class ReportParserGenerate extends ReportParserBase
 
     private AbstractRenderer $renderer;
 
-    /** @var AbstractRenderer Nested report elements */
-    private $wt_report;
+    // It's not clear what this variable does.
+    private ReportBaseElement|AbstractRenderer $wt_report;
 
     /** @var array<array<string>> Variables defined in the report at run-time */
     private array $vars;
@@ -543,10 +542,6 @@ class ReportParserGenerate extends ReportParserBase
     {
         $this->print_data      = array_pop($this->print_data_stack);
         $this->current_element = $this->wt_report;
-
-        // The TextBox handler is mis-using the wt_report attribute to store an element.
-        // Until this can be re-designed, we need this assertion to help static analysis tools.
-        assert($this->current_element instanceof ReportBaseElement, new LogicException());
 
         $this->wt_report = array_pop($this->wt_report_stack);
         $this->wt_report->addElement($this->current_element);
@@ -1920,19 +1915,7 @@ class ReportParserGenerate extends ReportParserBase
                 uasort($this->list, Individual::deathDateComparator());
                 break;
             case 'generation':
-                $newarray = [];
-                reset($this->list);
-                $genCounter = 1;
-                while (count($newarray) < count($this->list)) {
-                    foreach ($this->list as $key => $value) {
-                        $this->generation = $value->generation;
-                        if ($this->generation == $genCounter) {
-                            $newarray[$key] = (object) ['generation' => $this->generation];
-                        }
-                    }
-                    $genCounter++;
-                }
-                $this->list = $newarray;
+                uasort($this->list, static fn ($x, $y): int => $x->generation <=> $y->generation);
                 break;
             default:
                 // unsorted

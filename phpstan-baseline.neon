@@ -19,12 +19,6 @@ parameters:
 			path: app/Module/RelationshipsChartModule.php
 
 		-
-			rawMessage: Access to an undefined property Fisharebest\Webtrees\GedcomRecord::$generation.
-			identifier: property.notFound
-			count: 1
-			path: app/Report/ReportParserGenerate.php
-
-		-
 			rawMessage: 'Call to an undefined method Fisharebest\Webtrees\GedcomRecord::sex().'
 			identifier: method.notFound
 			count: 17
