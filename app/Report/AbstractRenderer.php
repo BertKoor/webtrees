@@ -194,34 +194,24 @@ abstract class AbstractRenderer
 
     abstract public function createLine(float $x1, float $y1, float $x2, float $y2): ReportBaseLine;
 
-    /**
-     * @param string $file  Filename
-     * @param float  $x
-     * @param float  $y
-     * @param float  $w     Image width
-     * @param float  $h     Image height
-     * @param string $align L:left, C:center, R:right or empty to use x/y
-     * @param string $ln    T:same line, N:next line
-     */
-    abstract public function createImage(string $file, float $x, float $y, float $w, float $h, string $align, string $ln): ReportBaseImage;
+    abstract public function createImage(
+        string $file,
+        float $x,
+        float $y,
+        float $w,
+        float $h,
+        string $align, // L:left, C:center, R:right or empty to use x/y
+        string $ln,    //  T:same line, N:next line
+    ): ReportBaseImage;
 
-    /**
-     * @param MediaFile          $media_file
-     * @param float              $x
-     * @param float              $y
-     * @param float              $w     Image width
-     * @param float              $h     Image height
-     * @param string             $align L:left, C:center, R:right or empty to use x/y
-     * @param string             $ln    T:same line, N:next line
-     */
     abstract public function createImageFromObject(
         MediaFile $media_file,
         float $x,
         float $y,
         float $w,
         float $h,
-        string $align,
-        string $ln
+        string $align, // L:left, C:center, R:right or empty to use x/y
+        string $ln,    // T:same line, N:next line
     ): ReportBaseImage;
 
     abstract public function createFootnote(string $style): ReportBaseFootnote;

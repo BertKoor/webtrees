@@ -54,7 +54,7 @@ class ReportPdfImage extends ReportBaseImage
         }
         if ($renderer->tcpdf->getRTL()) {
             $renderer->tcpdf->Image(
-                $this->file,
+                $this->src,
                 $renderer->tcpdf->getPageWidth() - $this->x,
                 $this->y,
                 $this->width,
@@ -68,7 +68,7 @@ class ReportPdfImage extends ReportBaseImage
             );
         } else {
             $renderer->tcpdf->Image(
-                $this->file,
+                $this->src,
                 $this->x,
                 $this->y,
                 $this->width,

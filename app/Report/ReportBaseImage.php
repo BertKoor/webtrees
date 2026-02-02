@@ -22,7 +22,7 @@ namespace Fisharebest\Webtrees\Report;
 abstract class ReportBaseImage extends ReportBaseElement
 {
     public function __construct(
-        protected string $file,
+        protected string $src,
         protected float $x,
         protected float $y,
         protected float $width,

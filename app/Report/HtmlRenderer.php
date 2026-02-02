@@ -19,8 +19,10 @@ declare(strict_types=1);
 
 namespace Fisharebest\Webtrees\Report;
 
+use Fisharebest\Webtrees\Auth;
 use Fisharebest\Webtrees\I18N;
 use Fisharebest\Webtrees\MediaFile;
+use Fisharebest\Webtrees\Registry;
 use Fisharebest\Webtrees\Webtrees;
 
 use function array_map;
@@ -229,8 +231,19 @@ class HtmlRenderer extends AbstractRenderer
         return new ReportHtmlFootnote($style);
     }
 
-    public function createImage(string $file, float $x, float $y, float $w, float $h, string $align, string $ln): ReportHtmlImage
-    {
+    public function createImage(
+        string $file,
+        float $x,
+        float $y,
+        float $w,
+        float $h,
+        string $align,
+        string $ln,
+    ): ReportHtmlImage {
+        $mime_type = mime_content_type($file);
+        $data      = file_get_contents($file);
+        $src = 'data:' . $mime_type . ';base64,' . base64_encode($data);
+
         return new ReportHtmlImage($file, $x, $y, $w, $h, $align, $ln);
     }
 
@@ -243,7 +256,20 @@ class HtmlRenderer extends AbstractRenderer
         string $align,
         string $ln
     ): ReportHtmlImage {
-        return new ReportHtmlImage($media_file->imageUrl((int) $w, (int) $h, 'crop'), $x, $y, $w, $h, $align, $ln);
+        // Send higher-resolution image at the same aspect ratio.
+        $add_watermark = Registry::imageFactory()->fileNeedsWatermark($media_file, Auth::user());
+
+        $data = Registry::imageFactory()->mediaFileThumbnail(
+            $media_file,
+            (int) ($w * 4),
+            (int) ($h * 4),
+            'crop',
+            $add_watermark,
+        );
+
+        $src = 'data:' . $media_file->mimeType() . ';base64,' . base64_encode($data);
+
+        return new ReportHtmlImage($src, $x, $y, $w, $h, $align, $ln);
     }
 
     public function createLine(float $x1, float $y1, float $x2, float $y2): ReportHtmlLine
@@ -421,7 +447,7 @@ class HtmlRenderer extends AbstractRenderer
         while ($string) {
             if (mb_strlen($string) <= $width) {
                 // Do not wrap any text that is less than the output area.
-                $out .= $string;
+                $out    .= $string;
                 $string = '';
             } else {
                 $sub1 = mb_substr($string, 0, $width + 1);
@@ -434,11 +460,11 @@ class HtmlRenderer extends AbstractRenderer
                 $spacepos = strrpos($sub, ' ');
                 if ($spacepos === false) {
                     // No space on the line?
-                    $out .= $sub . "\n";
+                    $out    .= $sub . "\n";
                     $string = mb_substr($string, mb_strlen($sub));
                 } else {
                     // Split at space;
-                    $out .= substr($string, 0, $spacepos) . "\n";
+                    $out    .= substr($string, 0, $spacepos) . "\n";
                     $string = substr($string, $spacepos + 1);
                 }
             }

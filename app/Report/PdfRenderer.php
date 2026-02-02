@@ -19,7 +19,9 @@ declare(strict_types=1);
 
 namespace Fisharebest\Webtrees\Report;
 
+use Fisharebest\Webtrees\Auth;
 use Fisharebest\Webtrees\MediaFile;
+use Fisharebest\Webtrees\Registry;
 use Fisharebest\Webtrees\Webtrees;
 
 use function count;
@@ -313,9 +315,18 @@ class PdfRenderer extends AbstractRenderer
         return new ReportPdfFootnote($style);
     }
 
-    public function createImage(string $file, float $x, float $y, float $w, float $h, string $align, string $ln): ReportPdfImage
-    {
-        return new ReportPdfImage($file, $x, $y, $w, $h, $align, $ln);
+    public function createImage(
+        string $file,
+        float $x,
+        float $y,
+        float $w,
+        float $h,
+        string $align,
+        string $ln,
+    ): ReportPdfImage {
+        $src = '@' . file_get_contents($file);
+
+        return new ReportPdfImage($src, $x, $y, $w, $h, $align, $ln);
     }
 
     public function createImageFromObject(
@@ -327,7 +338,20 @@ class PdfRenderer extends AbstractRenderer
         string $align,
         string $ln
     ): ReportPdfImage {
-        return new ReportPdfImage('@' . $media_file->fileContents(), $x, $y, $w, $h, $align, $ln);
+        // Send higher-resolution image at the same aspect ratio.
+        $add_watermark = Registry::imageFactory()->fileNeedsWatermark($media_file, Auth::user());
+
+        $data = Registry::imageFactory()->mediaFileThumbnail(
+            $media_file,
+            (int) ($w * 4),
+            (int) ($h * 4),
+            'crop',
+            $add_watermark,
+        );
+
+        $src = '@' . $data;
+
+        return new ReportPdfImage($src, $x, $y, $w, $h, $align, $ln);
     }
 
     public function createLine(float $x1, float $y1, float $x2, float $y2): ReportPdfLine
