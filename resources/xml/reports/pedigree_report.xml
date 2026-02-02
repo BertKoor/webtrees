@@ -31,9 +31,9 @@
 		<!-- Truncate variables -->
 		<SetVar name="trunc_name_gen_1" value="26" />
 		<SetVar name="trunc_name_gen_2" value="24" />
-		<SetVar name="trunc_name_gen_3" value="26" />
-		<SetVar name="trunc_name_gen_4" value="26" />
-		<SetVar name="trunc_name_gen_5" value="26" />
+		<SetVar name="trunc_name_gen_3" value="24" />
+		<SetVar name="trunc_name_gen_4" value="24" />
+		<SetVar name="trunc_name_gen_5" value="24" />
 		<SetVar name="trunc_fact_gen_1" value="50" />
 		<SetVar name="trunc_fact_gen_2" value="50" />
 		<SetVar name="trunc_fact_gen_3" value="50" />
