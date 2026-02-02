@@ -49,8 +49,10 @@ use Fisharebest\Webtrees\Report\ReportPdfText;
 use Fisharebest\Webtrees\Report\ReportPdfTextBox;
 use Fisharebest\Webtrees\Report\TcpdfWrapper;
 use Fisharebest\Webtrees\Services\UserService;
+use Fisharebest\Webtrees\Site;
 use Fisharebest\Webtrees\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function ob_get_clean;
 use function ob_start;
@@ -87,8 +89,56 @@ class AhnentafelReportModuleTest extends TestCase
 {
     protected static bool $uses_database = true;
 
-    public function testReportRunsWithoutError(): void
+    /**
+     * @return array<int,array<string,string>>
+     */
+    public static function reportOptions(): array
     {
+        return [
+            [
+                'children'  => 'on',
+                'maxgen'    => '-1',
+                'notes'     => 'on',
+                'occu'      => 'on',
+                'page_size' => 'A4',
+                'pid'       => 'X1030',
+                'resi'      => 'on',
+                'sources'   => 'on',
+            ],
+            [
+                'children'  => '',
+                'maxgen'    => '3',
+                'notes'     => '',
+                'occu'      => '',
+                'page_size' => 'US-Letter',
+                'pid'       => 'X1030',
+                'resi'      => '',
+                'sources'   => '',
+            ],
+            [
+                'children'  => '',
+                'maxgen'    => '',
+                'notes'     => '',
+                'occu'      => '',
+                'page_size' => '',
+                'pid'       => '',
+                'resi'      => '',
+                'sources'   => '',
+            ],
+        ];
+    }
+
+    #[DataProvider('reportOptions')]
+    public function testReportRunsWithoutError(
+        string $children,
+        string $maxgen,
+        string $notes,
+        string $occu,
+        string $page_size,
+        string $pid,
+        string $resi,
+        string $sources,
+    ): void {
         $user = (new UserService())->create('user', 'User', 'user@example.com', 'secret');
         $user->setPreference(UserInterface::PREF_IS_ADMINISTRATOR, '1');
         Auth::login($user);
@@ -99,17 +149,19 @@ class AhnentafelReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'pid'      => 'X1030',
-            'maxgen'   => '3',
-            'sources'  => 'on',
-            'pageSize' => 'A4',
-            'notes'    => 'on',
-            'occu'     => 'on',
-            'resi'     => 'on',
-            'children' => 'on',
+            'children' => $children,
+            'maxgen'   => $maxgen,
+            'notes'    => $notes,
+            'occu'     => $occu,
+            'pageSize' => $page_size,
+            'pid'      => $pid,
+            'resi'     => $resi,
+            'sources'  => $sources,
         ];
 
         new ReportParserSetup($xml);
+
+        Site::setPreference('INDEX_DIRECTORY', 'tests/data/');
 
         ob_start();
         new ReportParserGenerate($xml, new HtmlRenderer(), $vars, $tree);

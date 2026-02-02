@@ -49,8 +49,10 @@ use Fisharebest\Webtrees\Report\ReportPdfText;
 use Fisharebest\Webtrees\Report\ReportPdfTextBox;
 use Fisharebest\Webtrees\Report\TcpdfWrapper;
 use Fisharebest\Webtrees\Services\UserService;
+use Fisharebest\Webtrees\Site;
 use Fisharebest\Webtrees\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function ob_get_clean;
 
@@ -86,8 +88,61 @@ class DeathReportModuleTest extends TestCase
 {
     protected static bool $uses_database = true;
 
-    public function testReportRunsWithoutError(): void
+    /**
+     * @return array<int,array<string,string>>
+     */
+    public static function reportOptions(): array
     {
+        return [
+            [
+                'adlist'     => 'none',
+                'deathdate1' => '',
+                'deathdate2' => '',
+                'deathplace' => 'England',
+                'name'       => 'Windsor',
+                'page_size'  => 'A4',
+                'sortby'     => 'NAME',
+            ],
+            [
+                'adlist'     => '_MARNM',
+                'deathdate1' => '01 JAN 1900',
+                'deathdate2' => '31 DEC 1999',
+                'deathplace' => '',
+                'name'       => '',
+                'page_size'  => 'US-Letter',
+                'sortby'     => 'DEAT:DATE',
+            ],
+            [
+                'adlist'     => 'HUSB',
+                'deathdate1' => '',
+                'deathdate2' => '',
+                'deathplace' => '',
+                'name'       => '',
+                'page_size'  => 'A4',
+                'sortby'     => 'NAME',
+            ],
+            [
+                'adlist'     => '',
+                'deathdate1' => '',
+                'deathdate2' => '',
+                'deathplace' => '',
+                'name'       => '',
+                'page_size'  => '',
+                'sortby'     => '',
+            ],
+        ];
+    }
+
+    #[DataProvider('reportOptions')]
+    public function testReportRunsWithoutError(
+        string $adlist,
+        string $deathdate1,
+        string $deathdate2,
+        string $deathplace,
+        string $name,
+        string $page_size,
+        string $sortby,
+    ): void {
         $user = (new UserService())->create('user', 'User', 'user@example.com', 'secret');
         $user->setPreference(UserInterface::PREF_IS_ADMINISTRATOR, '1');
         Auth::login($user);
@@ -98,16 +153,18 @@ class DeathReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'name'       => '',
-            'deathplace' => '',
-            'deathdate1' => '',
-            'deathdate2' => '',
-            'adlist'     => 'none',
-            'sortby'     => 'NAME',
-            'pageSize'   => 'A4',
+            'adlist'     => $adlist,
+            'deathdate1' => $deathdate1,
+            'deathdate2' => $deathdate2,
+            'deathplace' => $deathplace,
+            'name'       => $name,
+            'pageSize'   => $page_size,
+            'sortby'     => $sortby,
         ];
 
         new ReportParserSetup($xml);
+
+        Site::setPreference('INDEX_DIRECTORY', 'tests/data/');
 
         ob_start();
         new ReportParserGenerate($xml, new HtmlRenderer(), $vars, $tree);

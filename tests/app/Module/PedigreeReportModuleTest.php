@@ -49,8 +49,10 @@ use Fisharebest\Webtrees\Report\ReportPdfText;
 use Fisharebest\Webtrees\Report\ReportPdfTextBox;
 use Fisharebest\Webtrees\Report\TcpdfWrapper;
 use Fisharebest\Webtrees\Services\UserService;
+use Fisharebest\Webtrees\Site;
 use Fisharebest\Webtrees\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(PedigreeReportModule::class)]
 #[CoversClass(AbstractRenderer::class)]
@@ -84,8 +86,40 @@ class PedigreeReportModuleTest extends TestCase
 {
     protected static bool $uses_database = true;
 
-    public function testReportRunsWithoutError(): void
+    /**
+     * @return array<int,array<string,string>>
+     */
+    public static function reportOptions(): array
     {
+        return [
+            [
+                'orientation' => 'portrait',
+                'page_size'   => 'A4',
+                'pid'         => 'X1030',
+                'spouses'     => 'on',
+            ],
+            [
+                'orientation' => 'landscape',
+                'page_size'   => 'US-Letter',
+                'pid'         => 'X1030',
+                'spouses'     => '',
+            ],
+            [
+                'orientation' => 'portrait', // Without this parameter, there is no output at all.
+                'page_size'   => '',
+                'pid'         => '',
+                'spouses'     => '',
+            ],
+        ];
+    }
+
+    #[DataProvider('reportOptions')]
+    public function testReportRunsWithoutError(
+        string $orientation,
+        string $page_size,
+        string $pid,
+        string $spouses,
+    ): void {
         $user = (new UserService())->create('user', 'User', 'user@example.com', 'secret');
         $user->setPreference(UserInterface::PREF_IS_ADMINISTRATOR, '1');
         Auth::login($user);
@@ -96,12 +130,15 @@ class PedigreeReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'pid'         => 'X1030',
-            'spouses'     => 'on',
-            'orientation' => 'portrait',
+            'orientation' => $orientation,
+            'pageSize'    => $page_size,
+            'pid'         => $pid,
+            'spouses'     => $spouses,
         ];
 
         new ReportParserSetup($xml);
+
+        Site::setPreference('INDEX_DIRECTORY', 'tests/data/');
 
         ob_start();
         new ReportParserGenerate($xml, new HtmlRenderer(), $vars, $tree);

@@ -49,8 +49,10 @@ use Fisharebest\Webtrees\Report\ReportPdfText;
 use Fisharebest\Webtrees\Report\ReportPdfTextBox;
 use Fisharebest\Webtrees\Report\TcpdfWrapper;
 use Fisharebest\Webtrees\Services\UserService;
+use Fisharebest\Webtrees\Site;
 use Fisharebest\Webtrees\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function ob_get_clean;
 use function ob_start;
@@ -87,8 +89,40 @@ class DescendancyReportModuleTest extends TestCase
 {
     protected static bool $uses_database = true;
 
-    public function testReportRunsWithoutError(): void
+    /**
+     * @return array<int,array<string,string>>
+     */
+    public static function reportOptions(): array
     {
+        return [
+            [
+                'maxgen'    => '-1',
+                'page_size' => 'A4',
+                'pid'       => 'X1030',
+                'sources'   => 'on',
+            ],
+            [
+                'maxgen'    => '3',
+                'page_size' => 'US-Letter',
+                'pid'       => 'X1030',
+                'sources'   => '',
+            ],
+            [
+                'maxgen'    => '',
+                'page_size' => '',
+                'pid'       => '',
+                'sources'   => '',
+            ],
+        ];
+    }
+
+    #[DataProvider('reportOptions')]
+    public function testReportRunsWithoutError(
+        string $maxgen,
+        string $page_size,
+        string $pid,
+        string $sources
+    ): void {
         $user = (new UserService())->create('user', 'User', 'user@example.com', 'secret');
         $user->setPreference(UserInterface::PREF_IS_ADMINISTRATOR, '1');
         Auth::login($user);
@@ -99,13 +133,15 @@ class DescendancyReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'pid'      => 'X1030',
-            'maxgen'   => '3',
-            'sources'  => 'on',
-            'pageSize' => 'A4',
+            'maxgen'   => $maxgen,
+            'pageSize' => $page_size,
+            'pid'      => $pid,
+            'sources'  => $sources,
         ];
 
         new ReportParserSetup($xml);
+
+        Site::setPreference('INDEX_DIRECTORY', 'tests/data/');
 
         ob_start();
         new ReportParserGenerate($xml, new HtmlRenderer(), $vars, $tree);

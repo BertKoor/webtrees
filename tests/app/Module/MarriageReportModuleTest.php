@@ -49,8 +49,10 @@ use Fisharebest\Webtrees\Report\ReportPdfText;
 use Fisharebest\Webtrees\Report\ReportPdfTextBox;
 use Fisharebest\Webtrees\Report\TcpdfWrapper;
 use Fisharebest\Webtrees\Services\UserService;
+use Fisharebest\Webtrees\Site;
 use Fisharebest\Webtrees\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(PedigreeReportModule::class)]
 #[CoversClass(AbstractRenderer::class)]
@@ -84,8 +86,48 @@ class MarriageReportModuleTest extends TestCase
 {
     protected static bool $uses_database = true;
 
-    public function testReportRunsWithoutError(): void
+    /**
+     * @return array<int,array<string,string>>
+     */
+    public static function reportOptions(): array
     {
+        return [
+            [
+                'marrdate1' => '01 JAN 1900',
+                'marrdate2' => '31 DEC 1999',
+                'marrplace' => 'England',
+                'name'      => 'Mountbatten',
+                'page_size' => 'A4',
+                'sortby'    => 'NAME',
+            ],
+            [
+                'marrdate1' => '01 JAN 1900',
+                'marrdate2' => '31 DEC 1999',
+                'marrplace' => 'England',
+                'name'      => 'Windsor',
+                'page_size' => 'US-Letter',
+                'sortby'    => 'MARR:DATE',
+            ],
+            [
+                'marrdate1' => '',
+                'marrdate2' => '',
+                'marrplace' => '',
+                'name'      => '',
+                'page_size' => '',
+                'sortby'    => '',
+            ],
+        ];
+    }
+
+    #[DataProvider('reportOptions')]
+    public function testReportRunsWithoutError(
+        string $marrdate1,
+        string $marrdate2,
+        string $marrplace,
+        string $name,
+        string $page_size,
+        string $sortby,
+    ): void {
         $user = (new UserService())->create('user', 'User', 'user@example.com', 'secret');
         $user->setPreference(UserInterface::PREF_IS_ADMINISTRATOR, '1');
         Auth::login($user);
@@ -96,15 +138,17 @@ class MarriageReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'name'      => '',
-            'marrplace' => '',
-            'marrdate1' => '',
-            'marrdate2' => '',
-            'sortby'    => 'NAME',
-            'pageSize'  => 'A4',
+            'marrdate1' => $marrdate1,
+            'marrdate2' => $marrdate2,
+            'marrplace' => $marrplace,
+            'name'      => $name,
+            'pageSize'  => $page_size,
+            'sortby'    => $sortby,
         ];
 
         new ReportParserSetup($xml);
+
+        Site::setPreference('INDEX_DIRECTORY', 'tests/data/');
 
         ob_start();
         new ReportParserGenerate($xml, new HtmlRenderer(), $vars, $tree);

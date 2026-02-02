@@ -22,9 +22,6 @@ namespace Fisharebest\Webtrees\Report;
 use DomainException;
 use XMLParser;
 
-use function fclose;
-use function feof;
-use function fread;
 use function method_exists;
 use function sprintf;
 use function xml_error_string;

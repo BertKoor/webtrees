@@ -49,8 +49,10 @@ use Fisharebest\Webtrees\Report\ReportPdfText;
 use Fisharebest\Webtrees\Report\ReportPdfTextBox;
 use Fisharebest\Webtrees\Report\TcpdfWrapper;
 use Fisharebest\Webtrees\Services\UserService;
+use Fisharebest\Webtrees\Site;
 use Fisharebest\Webtrees\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function ob_get_clean;
 use function ob_start;
@@ -87,8 +89,104 @@ class IndividualFamiliesReportModuleTest extends TestCase
 {
     protected static bool $uses_database = true;
 
-    public function testReportRunsWithoutError(): void
+    /**
+     * @return array<int,array<string,string>>
+     */
+    public static function reportOptions(): array
     {
+        return [
+            [
+                'colors'    => 'on',
+                'maxgen'    => '4',
+                'notes'     => 'on',
+                'page_size' => 'A4',
+                'photos'    => 'none',
+                'pid'       => 'X1030',
+                'relatives' => 'child-families',
+                'sortby'    => 'BIRT:DATE',
+                'sources'   => 'on',
+            ],
+            [
+                'colors'    => '',
+                'maxgen'    => '4',
+                'notes'     => '',
+                'page_size' => 'A4',
+                'photos'    => 'all',
+                'pid'       => 'X1030',
+                'relatives' => 'child-family',
+                'sortby'    => 'BIRT:DATE',
+                'sources'   => '',
+            ],
+            [
+                'colors'    => 'on',
+                'maxgen'    => '4',
+                'notes'     => 'on',
+                'page_size' => 'A4',
+                'photos'    => 'all',
+                'pid'       => 'X1030',
+                'relatives' => 'spouse-families',
+                'sortby'    => 'BIRT:DATE',
+                'sources'   => 'on',
+            ],
+            [
+                'colors'    => '',
+                'maxgen'    => '4',
+                'notes'     => '',
+                'page_size' => 'US-Letter',
+                'photos'    => 'highlighted',
+                'pid'       => 'X1030',
+                'relatives' => 'direct-ancestors',
+                'sortby'    => 'NAME',
+                'sources'   => '',
+            ],
+            [
+                'colors'    => 'on',
+                'maxgen'    => '4',
+                'notes'     => 'on',
+                'page_size' => 'US-Letter',
+                'photos'    => 'highlighted',
+                'pid'       => 'X1030',
+                'relatives' => 'descendants',
+                'sortby'    => 'NAME',
+                'sources'   => 'on',
+            ],
+            [
+                'colors'    => '',
+                'maxgen'    => '4',
+                'notes'     => '',
+                'page_size' => 'US-Letter',
+                'photos'    => 'highlighted',
+                'pid'       => 'X1030',
+                'relatives' => 'all',
+                'sortby'    => 'NAME',
+                'sources'   => '',
+            ],
+            [
+                'colors'    => '',
+                'maxgen'    => '',
+                'notes'     => '',
+                'page_size' => '',
+                'photos'    => '',
+                'pid'       => '',
+                'relatives' => '',
+                'sortby'    => '',
+                'sources'   => '',
+            ],
+        ];
+    }
+
+    #[DataProvider('reportOptions')]
+    public function testReportRunsWithoutError(
+        string $colors,
+        string $maxgen,
+        string $notes,
+        string $page_size,
+        string $photos,
+        string $pid,
+        string $relatives,
+        string $sortby,
+        string $sources,
+    ): void {
         $user = (new UserService())->create('user', 'User', 'user@example.com', 'secret');
         $user->setPreference(UserInterface::PREF_IS_ADMINISTRATOR, '1');
         Auth::login($user);
@@ -99,18 +197,20 @@ class IndividualFamiliesReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'pid'       => 'X1030',
-            'relatives' => 'child-families',
-            'maxgen'    => '4',
-            'sortby'    => 'BIRT:DATE',
-            'sources'   => 'on',
-            'notes'     => 'on',
-            'photos'    => 'on',
-            'pageSize'  => 'A4',
-            'colors'    => 'on',
+            'colors'    => $colors,
+            'maxgen'    => $maxgen,
+            'notes'     => $notes,
+            'pageSize'  => $page_size,
+            'photos'    => $photos,
+            'pid'       => $pid,
+            'relatives' => $relatives,
+            'sortby'    => $sortby,
+            'sources'   => $sources,
         ];
 
         new ReportParserSetup($xml);
+
+        Site::setPreference('INDEX_DIRECTORY', 'tests/data/');
 
         ob_start();
         new ReportParserGenerate($xml, new HtmlRenderer(), $vars, $tree);

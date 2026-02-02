@@ -49,8 +49,10 @@ use Fisharebest\Webtrees\Report\ReportPdfText;
 use Fisharebest\Webtrees\Report\ReportPdfTextBox;
 use Fisharebest\Webtrees\Report\TcpdfWrapper;
 use Fisharebest\Webtrees\Services\UserService;
+use Fisharebest\Webtrees\Site;
 use Fisharebest\Webtrees\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(PedigreeReportModule::class)]
 #[CoversClass(AbstractRenderer::class)]
@@ -84,8 +86,168 @@ class MissingFactsReportModuleTest extends TestCase
 {
     protected static bool $uses_database = true;
 
-    public function testReportRunsWithoutError(): void
+    /**
+     * @return array<int,array<string,string>>
+     */
+    public static function reportOptions(): array
     {
+        return [
+            [
+                'fbapm'     => 'on',
+                'fbarm'     => '',
+                'fbasm'     => 'on',
+                'fbirt'     => '',
+                'fburi'     => 'on',
+                'fconf'     => '',
+                'fdeat'     => 'on',
+                'fenga'     => '',
+                'ffcom'     => 'on',
+                'fmarb'     => '',
+                'fmarr'     => 'on',
+                'freli'     => '',
+                'fsour'     => 'on',
+                'maxgen'    => '-1',
+                'page_size' => 'A4',
+                'pid'       => 'X1030',
+                'relatives' => 'child-family',
+            ],
+            [
+                'fbapm'     => '',
+                'fbarm'     => 'on',
+                'fbasm'     => '',
+                'fbirt'     => 'on',
+                'fburi'     => '',
+                'fconf'     => 'on',
+                'fdeat'     => '',
+                'fenga'     => 'on',
+                'ffcom'     => '',
+                'fmarb'     => 'on',
+                'fmarr'     => '',
+                'freli'     => 'on',
+                'fsour'     => '',
+                'maxgen'    => '-1',
+                'page_size' => 'US-Letter',
+                'pid'       => 'X1030',
+                'relatives' => 'spouse-family',
+            ],
+            [
+                'fbapm'     => 'on',
+                'fbarm'     => '',
+                'fbasm'     => 'on',
+                'fbirt'     => '',
+                'fburi'     => 'on',
+                'fconf'     => '',
+                'fdeat'     => 'on',
+                'fenga'     => '',
+                'ffcom'     => 'on',
+                'fmarb'     => '',
+                'fmarr'     => 'on',
+                'freli'     => '',
+                'fsour'     => 'on',
+                'maxgen'    => '-1',
+                'page_size' => 'A4',
+                'pid'       => 'X1030',
+                'relatives' => 'direct-ancestors',
+            ],
+            [
+                'fbapm'     => '',
+                'fbarm'     => 'on',
+                'fbasm'     => '',
+                'fbirt'     => 'on',
+                'fburi'     => '',
+                'fconf'     => 'on',
+                'fdeat'     => '',
+                'fenga'     => 'on',
+                'ffcom'     => '',
+                'fmarb'     => 'on',
+                'fmarr'     => '',
+                'freli'     => 'on',
+                'fsour'     => '',
+                'maxgen'    => '-1',
+                'page_size' => 'US-Letter',
+                'pid'       => 'X1030',
+                'relatives' => 'ancestors',
+            ],
+            [
+                'fbapm'     => 'on',
+                'fbarm'     => '',
+                'fbasm'     => 'on',
+                'fbirt'     => '',
+                'fburi'     => 'on',
+                'fconf'     => '',
+                'fdeat'     => 'on',
+                'fenga'     => '',
+                'ffcom'     => 'on',
+                'fmarb'     => '',
+                'fmarr'     => 'on',
+                'freli'     => '',
+                'fsour'     => 'on',
+                'maxgen'    => '-1',
+                'page_size' => 'A4',
+                'pid'       => 'X1030',
+                'relatives' => 'descendants',
+            ],
+            [
+                'fbapm'     => '',
+                'fbarm'     => 'on',
+                'fbasm'     => '',
+                'fbirt'     => 'on',
+                'fburi'     => '',
+                'fconf'     => 'on',
+                'fdeat'     => '',
+                'fenga'     => 'on',
+                'ffcom'     => '',
+                'fmarb'     => 'on',
+                'fmarr'     => '',
+                'freli'     => 'on',
+                'fsour'     => '',
+                'maxgen'    => '-1',
+                'page_size' => 'US-Letter',
+                'pid'       => 'X1030',
+                'relatives' => 'all',
+            ],
+            [
+                'fbapm'     => '',
+                'fbarm'     => '',
+                'fbasm'     => '',
+                'fbirt'     => '',
+                'fburi'     => '',
+                'fconf'     => '',
+                'fdeat'     => '',
+                'fenga'     => '',
+                'ffcom'     => '',
+                'fmarb'     => '',
+                'fmarr'     => '',
+                'freli'     => '',
+                'fsour'     => '',
+                'maxgen'    => '',
+                'page_size' => '',
+                'pid'       => '',
+                'relatives' => '',
+            ],
+        ];
+    }
+
+    #[DataProvider('reportOptions')]
+    public function testReportRunsWithoutError(
+        string $fbapm,
+        string $fbarm,
+        string $fbasm,
+        string $fbirt,
+        string $fburi,
+        string $fconf,
+        string $fdeat,
+        string $fenga,
+        string $ffcom,
+        string $fmarb,
+        string $fmarr,
+        string $freli,
+        string $fsour,
+        string $maxgen,
+        string $page_size,
+        string $pid,
+        string $relatives,
+    ): void {
         $user = (new UserService())->create('user', 'User', 'user@example.com', 'secret');
         $user->setPreference(UserInterface::PREF_IS_ADMINISTRATOR, '1');
         Auth::login($user);
@@ -96,27 +258,28 @@ class MissingFactsReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'pid'       => 'X1030',
-            'relatives' => 'direct-ancestors',
-            'maxgen'    => '*',
-            'pageSize'  => 'A4',
-            'sortby'    => 'NAME',
-            'fbirt'     => 'on',
-            'fburi'     => 'on',
-            'fdeat'     => 'on',
-            'fsour'     => 'on',
-            'fbapm'     => 'on',
-            'fbarm'     => 'on',
-            'fbasm'     => 'on',
-            'fconf'     => 'on',
-            'fenga'     => 'on',
-            'ffcom'     => 'on',
-            'fmarb'     => 'on',
-            'fmarr'     => 'on',
-            'freli'     => 'on',
+            'fbapm'     => $fbapm,
+            'fbarm'     => $fbarm,
+            'fbasm'     => $fbasm,
+            'fbirt'     => $fbirt,
+            'fburi'     => $fburi,
+            'fconf'     => $fconf,
+            'fdeat'     => $fdeat,
+            'fenga'     => $fenga,
+            'ffcom'     => $ffcom,
+            'fmarb'     => $fmarb,
+            'fmarr'     => $fmarr,
+            'freli'     => $freli,
+            'fsour'     => $fsour,
+            'maxgen'    => $maxgen,
+            'pageSize'  => $page_size,
+            'pid'       => $pid,
+            'relatives' => $relatives,
         ];
 
         new ReportParserSetup($xml);
+
+        Site::setPreference('INDEX_DIRECTORY', 'tests/data/');
 
         ob_start();
         new ReportParserGenerate($xml, new HtmlRenderer(), $vars, $tree);

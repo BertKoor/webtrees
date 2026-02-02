@@ -49,8 +49,10 @@ use Fisharebest\Webtrees\Report\ReportPdfText;
 use Fisharebest\Webtrees\Report\ReportPdfTextBox;
 use Fisharebest\Webtrees\Report\TcpdfWrapper;
 use Fisharebest\Webtrees\Services\UserService;
+use Fisharebest\Webtrees\Site;
 use Fisharebest\Webtrees\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(PedigreeReportModule::class)]
 #[CoversClass(AbstractRenderer::class)]
@@ -84,8 +86,64 @@ class RelatedIndividualsReportModuleTest extends TestCase
 {
     protected static bool $uses_database = true;
 
-    public function testReportRunsWithoutError(): void
+    /**
+     * @return array<int,array<string,string>>
+     */
+    public static function reportOptions(): array
     {
+        return [
+            [
+                'page_size' => 'A4',
+                'pid'       => 'X1030',
+                'relatives' => 'child-family',
+                'sortby'    => 'NAME',
+            ],
+            [
+                'page_size' => 'US-Letter',
+                'pid'       => 'X1030',
+                'relatives' => 'spouse-family',
+                'sortby'    => 'BIRT:DATE',
+            ],
+            [
+                'page_size' => 'A4',
+                'pid'       => 'X1030',
+                'relatives' => 'direct-ancestors',
+                'sortby'    => 'DEAT:DATE',
+            ],
+            [
+                'page_size' => 'US-Letter',
+                'pid'       => 'X1030',
+                'relatives' => 'ancestors',
+                'sortby'    => 'NAME',
+            ],
+            [
+                'page_size' => 'A4',
+                'pid'       => 'X1030',
+                'relatives' => 'descendants',
+                'sortby'    => 'BIRT:DATE',
+            ],
+            [
+                'page_size' => 'US-Letter',
+                'pid'       => 'X1030',
+                'relatives' => 'all',
+                'sortby'    => 'DEAT:DATE',
+            ],
+            [
+                'page_size' => '',
+                'pid'       => '',
+                'relatives' => '',
+                'sortby'    => '',
+            ],
+        ];
+    }
+
+    #[DataProvider('reportOptions')]
+    public function testReportRunsWithoutError(
+        string $page_size,
+        string $pid,
+        string $relatives,
+        string $sortby,
+    ): void {
         $user = (new UserService())->create('user', 'User', 'user@example.com', 'secret');
         $user->setPreference(UserInterface::PREF_IS_ADMINISTRATOR, '1');
         Auth::login($user);
@@ -96,18 +154,15 @@ class RelatedIndividualsReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'pid'       => 'X1030',
-            'relatives' => 'child-family',
-            'maxgen'    => '4',
-            'sortby'    => 'BIRT:DATE',
-            'sources'   => 'on',
-            'notes'     => 'on',
-            'photos'    => 'all',
-            'colors'    => 'on',
-            'pageSize'  => 'A4',
+            'pageSize'  => $page_size,
+            'pid'       => $pid,
+            'relatives' => $relatives,
+            'sortby'    => $sortby,
         ];
 
         new ReportParserSetup($xml);
+
+        Site::setPreference('INDEX_DIRECTORY', 'tests/data/');
 
         ob_start();
         new ReportParserGenerate($xml, new HtmlRenderer(), $vars, $tree);

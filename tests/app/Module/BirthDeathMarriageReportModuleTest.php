@@ -46,8 +46,10 @@ use Fisharebest\Webtrees\Report\ReportPdfLine;
 use Fisharebest\Webtrees\Report\ReportPdfText;
 use Fisharebest\Webtrees\Report\ReportPdfTextBox;
 use Fisharebest\Webtrees\Report\TcpdfWrapper;
+use Fisharebest\Webtrees\Site;
 use Fisharebest\Webtrees\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 #[CoversClass(PedigreeReportModule::class)]
 #[CoversClass(AbstractRenderer::class)]
@@ -81,25 +83,85 @@ class BirthDeathMarriageReportModuleTest extends TestCase
 {
     protected static bool $uses_database = true;
 
-    public function testReportRunsWithoutError(): void
+    /**
+     * @return array<int,array<string,string>>
+     */
+    public static function reportOptions(): array
     {
+        return [
+            [
+                'name'       => '',
+                'bdmplace'   => '',
+                'birthdate1' => '01 JAN 1900',
+                'birthdate2' => '31 DEC 1999',
+                'deathdate1' => '',
+                'deathdate2' => '',
+                'sortby'     => 'BIRT:DATE',
+                'page_size'  => 'A4',
+            ],
+            [
+                'name'       => '',
+                'bdmplace'   => '',
+                'birthdate1' => '',
+                'birthdate2' => '',
+                'deathdate1' => '01 JAN 1900',
+                'deathdate2' => '31 DEC 1999',
+                'sortby'     => 'DEAT:DATE',
+                'page_size'  => 'US-Letter',
+            ],
+            [
+                'name'       => 'Windsor',
+                'bdmplace'   => 'England',
+                'birthdate1' => '',
+                'birthdate2' => '',
+                'deathdate1' => '',
+                'deathdate2' => '',
+                'sortby'     => '',
+                'page_size'  => 'A4',
+            ],
+            [
+                'name'       => '',
+                'bdmplace'   => '',
+                'birthdate1' => '',
+                'birthdate2' => '',
+                'deathdate1' => '',
+                'deathdate2' => '',
+                'sortby'     => '',
+                'page_size'  => '',
+            ],
+        ];
+    }
+
+    #[DataProvider('reportOptions')]
+    public function testReportRunsWithoutError(
+        string $name,
+        string $bdmplace,
+        string $birthdate1,
+        string $birthdate2,
+        string $deathdate1,
+        string $deathdate2,
+        string $sortby,
+        string $page_size,
+    ): void {
         $tree   = $this->importTree('demo.ged');
         $module = new BirthDeathMarriageReportModule();
         $module->setName('bdm_report');
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'name'       => '',
-            'bdmplace'   => '',
-            'birthdate1' => '',
-            'birthdate2' => '',
-            'deathdate1' => '',
-            'deathdate2' => '',
-            'sortby'     => 'BIRT:DATE',
-            'pageSize'   => 'A4',
+            'name'       => $name,
+            'bdmplace'   => $bdmplace,
+            'birthdate1' => $birthdate1,
+            'birthdate2' => $birthdate2,
+            'deathdate1' => $deathdate1,
+            'deathdate2' => $deathdate2,
+            'sortby'     => $sortby,
+            'pageSize'   => $page_size,
         ];
 
         new ReportParserSetup($xml);
+
+        Site::setPreference('INDEX_DIRECTORY', 'tests/data/');
 
         ob_start();
         new ReportParserGenerate($xml, new HtmlRenderer(), $vars, $tree);

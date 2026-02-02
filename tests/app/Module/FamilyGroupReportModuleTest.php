@@ -49,8 +49,10 @@ use Fisharebest\Webtrees\Report\ReportPdfText;
 use Fisharebest\Webtrees\Report\ReportPdfTextBox;
 use Fisharebest\Webtrees\Report\TcpdfWrapper;
 use Fisharebest\Webtrees\Services\UserService;
+use Fisharebest\Webtrees\Site;
 use Fisharebest\Webtrees\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function ob_get_clean;
 
@@ -86,8 +88,52 @@ class FamilyGroupReportModuleTest extends TestCase
 {
     protected static bool $uses_database = true;
 
-    public function testReportRunsWithoutError(): void
+    /**
+     * @return array<int,array<string,string>>
+     */
+    public static function reportOptions(): array
     {
+        return [
+            [
+                'blanks'    => 'on',
+                'colors'    => 'on',
+                'id'        => 'f1',
+                'notes'     => 'on',
+                'page_size' => 'A4',
+                'photos'    => 'on',
+                'sources'   => 'on',
+            ],
+            [
+                'blanks'    => '',
+                'colors'    => '',
+                'id'        => 'f1',
+                'notes'     => '',
+                'page_size' => 'US-Letter',
+                'photos'    => '',
+                'sources'   => '',
+            ],
+            [
+                'blanks'    => '',
+                'colors'    => '',
+                'id'        => '',
+                'notes'     => '',
+                'page_size' => '',
+                'photos'    => '',
+                'sources'   => '',
+            ],
+        ];
+    }
+
+    #[DataProvider('reportOptions')]
+    public function testReportRunsWithoutError(
+        string $blanks,
+        string $colors,
+        string $id,
+        string $notes,
+        string $page_size,
+        string $photos,
+        string $sources,
+    ): void {
         $user = (new UserService())->create('user', 'User', 'user@example.com', 'secret');
         $user->setPreference(UserInterface::PREF_IS_ADMINISTRATOR, '1');
         Auth::login($user);
@@ -98,16 +144,18 @@ class FamilyGroupReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'id'       => 'f1',
-            'sources'  => 'on',
-            'notes'    => 'on',
-            'photos'   => 'on',
-            'colors'   => 'on',
-            'blanks'   => 'on',
-            'pageSize' => 'A4',
+            'blanks'   => $blanks,
+            'colors'   => $colors,
+            'id'       => $id,
+            'notes'    => $notes,
+            'pageSize' => $page_size,
+            'photos'   => $photos,
+            'sources'  => $sources,
         ];
 
         new ReportParserSetup($xml);
+
+        Site::setPreference('INDEX_DIRECTORY', 'tests/data/');
 
         ob_start();
         new ReportParserGenerate($xml, new HtmlRenderer(), $vars, $tree);

@@ -49,8 +49,10 @@ use Fisharebest\Webtrees\Report\ReportPdfText;
 use Fisharebest\Webtrees\Report\ReportPdfTextBox;
 use Fisharebest\Webtrees\Report\TcpdfWrapper;
 use Fisharebest\Webtrees\Services\UserService;
+use Fisharebest\Webtrees\Site;
 use Fisharebest\Webtrees\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function ob_get_clean;
 
@@ -86,8 +88,46 @@ class CemeteryReportModuleTest extends TestCase
 {
     protected static bool $uses_database = true;
 
-    public function testReportRunsWithoutError(): void
+    /**
+     * @return array<int,array<string,string>>
+     */
+    public static function reportOptions(): array
     {
+        return [
+            [
+                'adlist'     => 'none',
+                'deathplace' => 'England',
+                'page_size'  => 'A4',
+                'sortby'     => 'NAME',
+            ],
+            [
+                'adlist'     => '_MARNM',
+                'deathplace' => '',
+                'page_size'  => 'US-Letter',
+                'sortby'     => 'DEAT:DATE',
+            ],
+            [
+                'adlist'     => 'HUSB',
+                'deathplace' => '',
+                'page_size'  => 'A4',
+                'sortby'     => 'NAME',
+            ],
+            [
+                'adlist'     => '',
+                'deathplace' => '',
+                'page_size'  => '',
+                'sortby'     => '',
+            ],
+        ];
+    }
+
+    #[DataProvider('reportOptions')]
+    public function testReportRunsWithoutError(
+        string $adlist,
+        string $deathplace,
+        string $page_size,
+        string $sortby,
+    ): void {
         $user = (new UserService())->create('user', 'User', 'user@example.com', 'secret');
         $user->setPreference(UserInterface::PREF_IS_ADMINISTRATOR, '1');
         Auth::login($user);
@@ -98,13 +138,15 @@ class CemeteryReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'deathplace' => '',
-            'adlist'     => 'none',
-            'sortby'     => 'NAME',
-            'pageSize'   => 'A4',
+            'adlist'     => $adlist,
+            'deathplace' => $deathplace,
+            'pageSize'   => $page_size,
+            'sortby'     => $sortby,
         ];
 
         new ReportParserSetup($xml);
+
+        Site::setPreference('INDEX_DIRECTORY', 'tests/data/');
 
         ob_start();
         new ReportParserGenerate($xml, new HtmlRenderer(), $vars, $tree);

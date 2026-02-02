@@ -49,8 +49,10 @@ use Fisharebest\Webtrees\Report\ReportPdfText;
 use Fisharebest\Webtrees\Report\ReportPdfTextBox;
 use Fisharebest\Webtrees\Report\TcpdfWrapper;
 use Fisharebest\Webtrees\Services\UserService;
+use Fisharebest\Webtrees\Site;
 use Fisharebest\Webtrees\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function ob_get_clean;
 
@@ -86,8 +88,48 @@ class BirthReportModuleTest extends TestCase
 {
     protected static bool $uses_database = true;
 
-    public function testReportRunsWithoutError(): void
+    /**
+     * @return array<int,array<string,string>>
+     */
+    public static function reportOptions(): array
     {
+        return [
+            [
+                'birthdate1' => '',
+                'birthdate2' => '',
+                'birthplace' => 'England',
+                'name'       => 'Windsor',
+                'page_size'   => 'A4',
+                'sortby'     => 'NAME',
+            ],
+            [
+                'birthdate1' => '01 JAN 1900',
+                'birthdate2' => '31 DEC 1999',
+                'birthplace' => '',
+                'name'       => '',
+                'page_size'   => 'US-Letter',
+                'sortby'     => 'BIRT:DATE',
+            ],
+            [
+                'birthdate1' => '',
+                'birthdate2' => '',
+                'birthplace' => '',
+                'name'       => '',
+                'page_size'   => '',
+                'sortby'     => '',
+            ],
+        ];
+    }
+
+    #[DataProvider('reportOptions')]
+    public function testReportRunsWithoutError(
+        string $birthdate1,
+        string $birthdate2,
+        string $birthplace,
+        string $name,
+        string $page_size,
+        string $sortby,
+    ): void {
         $user = (new UserService())->create('user', 'User', 'user@example.com', 'secret');
         $user->setPreference(UserInterface::PREF_IS_ADMINISTRATOR, '1');
         Auth::login($user);
@@ -98,15 +140,17 @@ class BirthReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'name'       => '',
-            'birthplace' => '',
-            'birthdate1' => '',
-            'birthdate2' => '',
-            'sortby'     => 'NAME',
-            'pageSize'   => 'A4',
+            'birthdate1' => $birthdate1,
+            'birthdate2' => $birthdate2,
+            'birthplace' => $birthplace,
+            'name'       => $name,
+            'pageSize'   => $page_size,
+            'sortby'     => $sortby,
         ];
 
         new ReportParserSetup($xml);
+
+        Site::setPreference('INDEX_DIRECTORY', 'tests/data/');
 
         ob_start();
         new ReportParserGenerate($xml, new HtmlRenderer(), $vars, $tree);

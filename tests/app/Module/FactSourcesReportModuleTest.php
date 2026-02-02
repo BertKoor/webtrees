@@ -49,8 +49,10 @@ use Fisharebest\Webtrees\Report\ReportPdfText;
 use Fisharebest\Webtrees\Report\ReportPdfTextBox;
 use Fisharebest\Webtrees\Report\TcpdfWrapper;
 use Fisharebest\Webtrees\Services\UserService;
+use Fisharebest\Webtrees\Site;
 use Fisharebest\Webtrees\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function ob_get_clean;
 
@@ -86,8 +88,40 @@ class FactSourcesReportModuleTest extends TestCase
 {
     protected static bool $uses_database = true;
 
-    public function testReportRunsWithoutError(): void
+    /**
+     * @return array<int,array<string,string>>
+     */
+    public static function reportOptions(): array
     {
+        return [
+            [
+                'page_size' => 'A4',
+                'sid'       => 'X1102',
+                'sortby'    => 'BIRT:DATE',
+                'stype'     => 'facts',
+            ],
+            [
+                'page_size' => 'US-Letter',
+                'sid'       => 'X1102',
+                'sortby'    => 'NAME',
+                'stype'     => 'records',
+            ],
+            [
+                'page_size' => '',
+                'sid'       => '',
+                'sortby'    => '',
+                'stype'     => '',
+            ],
+        ];
+    }
+
+    #[DataProvider('reportOptions')]
+    public function testReportRunsWithoutError(
+        string $page_size,
+        string $sid,
+        string $sortby,
+        string $stype,
+    ): void {
         $user = (new UserService())->create('user', 'User', 'user@example.com', 'secret');
         $user->setPreference(UserInterface::PREF_IS_ADMINISTRATOR, '1');
         Auth::login($user);
@@ -98,13 +132,15 @@ class FactSourcesReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'sid'      => 'X1102',
-            'stype'    => 'facts',
-            'sortby'   => 'BIRT:DATE',
-            'pageSize' => 'A4',
+            'pageSize' => $page_size,
+            'sid'      => $sid,
+            'sortby'   => $sortby,
+            'stype'    => $stype,
         ];
 
         new ReportParserSetup($xml);
+
+        Site::setPreference('INDEX_DIRECTORY', 'tests/data/');
 
         ob_start();
         new ReportParserGenerate($xml, new HtmlRenderer(), $vars, $tree);

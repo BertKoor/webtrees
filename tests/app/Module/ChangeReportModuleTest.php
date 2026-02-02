@@ -21,7 +21,6 @@ namespace Fisharebest\Webtrees\Module;
 
 use Fisharebest\Webtrees\Auth;
 use Fisharebest\Webtrees\Contracts\UserInterface;
-use Fisharebest\Webtrees\Registry;
 use Fisharebest\Webtrees\Report\AbstractRenderer;
 use Fisharebest\Webtrees\Report\HtmlRenderer;
 use Fisharebest\Webtrees\Report\PdfRenderer;
@@ -50,8 +49,10 @@ use Fisharebest\Webtrees\Report\ReportPdfText;
 use Fisharebest\Webtrees\Report\ReportPdfTextBox;
 use Fisharebest\Webtrees\Report\TcpdfWrapper;
 use Fisharebest\Webtrees\Services\UserService;
+use Fisharebest\Webtrees\Site;
 use Fisharebest\Webtrees\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 use function ob_get_clean;
 
@@ -87,8 +88,56 @@ class ChangeReportModuleTest extends TestCase
 {
     protected static bool $uses_database = true;
 
-    public function testReportRunsWithoutError(): void
+    /**
+     * @return array<int,array<string,string>>
+     */
+    public static function reportOptions(): array
     {
+        return [
+            [
+                'change_range_start' => '01 JAN 2020',
+                'change_range_end'   => '31 DEC 2030',
+                'pending'            => 'yes',
+                'sortby'             => 'CHAN',
+                'page_size'          => 'A4',
+                'pageorient'         => 'landscape',
+            ],
+            [
+                'change_range_start' => '01 JAN 2020',
+                'change_range_end'   => '31 DEC 2030',
+                'pending'            => 'no',
+                'sortby'             => 'NAME',
+                'page_size'          => 'US-Letter',
+                'pageorient'         => 'portrait',
+            ],
+            [
+                'change_range_start' => '01 JAN 2020',
+                'change_range_end'   => '31 DEC 2030',
+                'pending'            => 'yes',
+                'sortby'             => 'BIRT:DATE',
+                'page_size'          => 'A4',
+                'pageorient'         => 'landscape',
+            ],
+            [
+                'change_range_start' => '',
+                'change_range_end'   => '',
+                'pending'            => '',
+                'sortby'             => '',
+                'page_size'          => '',
+                'pageorient'         => '',
+            ],
+        ];
+    }
+
+    #[DataProvider('reportOptions')]
+    public function testReportRunsWithoutError(
+        string $change_range_start,
+        string $change_range_end,
+        string $pending,
+        string $sortby,
+        string $page_size,
+        string $pageorient,
+    ): void {
         $user = (new UserService())->create('user', 'User', 'user@example.com', 'secret');
         $user->setPreference(UserInterface::PREF_IS_ADMINISTRATOR, '1');
         Auth::login($user);
@@ -99,15 +148,17 @@ class ChangeReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'changeRangeStart' => Registry::timestampFactory()->now()->subtractMonths(1)->format('d M Y'),
-            'changeRangeEnd'   => Registry::timestampFactory()->now()->format('d M Y'),
-            'pending'          => 'yes',
-            'sortby'           => 'CHAN',
-            'pageSize'         => 'A4',
-            'pageorient'       => 'landscape',
+            'changeRangeStart' => $change_range_start,
+            'changeRangeEnd'   => $change_range_end,
+            'pending'          => $pending,
+            'sortby'           => $sortby,
+            'pageSize'         => $page_size,
+            'pageorient'       => $pageorient,
         ];
 
         new ReportParserSetup($xml);
+
+        Site::setPreference('INDEX_DIRECTORY', 'tests/data/');
 
         ob_start();
         new ReportParserGenerate($xml, new HtmlRenderer(), $vars, $tree);
