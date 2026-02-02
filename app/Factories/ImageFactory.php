@@ -171,6 +171,50 @@ class ImageFactory implements ImageFactoryInterface
     /**
      * Create a smaller version of an image.
      */
+    public function mediaFileThumbnail(
+        MediaFile $media_file,
+        int $width,
+        int $height,
+        string $fit,
+        bool $add_watermark
+    ): string {
+        // Where are the images stored.
+        $filesystem = $media_file->media()->tree()->mediaFilesystem();
+
+        // Where is the image stored in the filesystem.
+        $path = $media_file->filename();
+
+        $key = implode(separator: ':', array: [
+            $media_file->media()->tree()->name(),
+            $path,
+            $filesystem->lastModified(path: $path),
+            (string) $width,
+            (string) $height,
+            $fit,
+            (string) $add_watermark,
+        ]);
+
+        $closure = function () use ($filesystem, $path, $width, $height, $fit, $add_watermark, $media_file): string {
+            $image = $this->imageManager()->read(input: $filesystem->readStream($path));
+            $image = $this->resizeImage(image: $image, width: $width, height: $height, fit: $fit);
+
+            if ($add_watermark) {
+                $watermark = $this->createWatermark(width: $image->width(), height: $image->height(), media_file: $media_file);
+                $image     = $this->addWatermark(image: $image, watermark: $watermark);
+            }
+
+            $quality = $this->extractImageQuality(image: $image, default:  static::GD_DEFAULT_THUMBNAIL_QUALITY);
+
+            return $image->encodeByMediaType(type: $media_file->mimeType(), quality: $quality)->toString();
+        };
+
+        return Registry::cache()->file()->remember(key: $key, closure: $closure, ttl: static::THUMBNAIL_CACHE_TTL);
+    }
+
+
+    /**
+     * Create a smaller version of an image.
+     */
     public function mediaFileThumbnailResponse(
         MediaFile $media_file,
         int $width,
@@ -187,33 +231,7 @@ class ImageFactory implements ImageFactoryInterface
         try {
             $mime_type = $filesystem->mimeType(path: $path);
 
-            $key = implode(separator: ':', array: [
-                $media_file->media()->tree()->name(),
-                $path,
-                $filesystem->lastModified(path: $path),
-                (string) $width,
-                (string) $height,
-                $fit,
-                (string) $add_watermark,
-            ]);
-
-            $closure = function () use ($filesystem, $path, $width, $height, $fit, $add_watermark, $media_file): string {
-                $image = $this->imageManager()->read(input: $filesystem->readStream($path));
-                $image = $this->resizeImage(image: $image, width: $width, height: $height, fit: $fit);
-
-                if ($add_watermark) {
-                    $watermark = $this->createWatermark(width: $image->width(), height: $image->height(), media_file: $media_file);
-                    $image     = $this->addWatermark(image: $image, watermark: $watermark);
-                }
-
-                $quality = $this->extractImageQuality(image: $image, default:  static::GD_DEFAULT_THUMBNAIL_QUALITY);
-
-                return $image->encodeByMediaType(type: $media_file->mimeType(), quality: $quality)->toString();
-            };
-
-            // Images and Responses both contain resources - which cannot be serialized.
-            // So cache the raw image data.
-            $data = Registry::cache()->file()->remember(key: $key, closure: $closure, ttl: static::THUMBNAIL_CACHE_TTL);
+            $data = $this->mediaFileThumbnail($media_file, $width, $height, $fit, $add_watermark);
 
             return $this->imageResponse(data: $data, mime_type:  $mime_type, filename:  '');
         } catch (NotReadableException $ex) {
