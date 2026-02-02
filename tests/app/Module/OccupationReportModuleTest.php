@@ -96,9 +96,9 @@ class OccupationReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'occupation' => ['id' => 'king'],
-            'pageSize'  => ['id' => 'A4'],
-            'sortby'    => ['id' => 'NAME'],
+            'occupation' => 'king',
+            'pageSize'   => 'A4',
+            'sortby'     => 'NAME',
         ];
 
         new ReportParserSetup($xml);

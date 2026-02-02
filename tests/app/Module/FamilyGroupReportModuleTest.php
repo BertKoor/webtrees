@@ -98,13 +98,13 @@ class FamilyGroupReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'id'       => ['id' => 'f1'],
-            'sources'  => ['id' => 'on'],
-            'notes'    => ['id' => 'on'],
-            'photos'   => ['id' => 'on'],
-            'colors'   => ['id' => 'on'],
-            'blanks'   => ['id' => 'on'],
-            'pageSize' => ['id' => 'A4'],
+            'id'       => 'f1',
+            'sources'  => 'on',
+            'notes'    => 'on',
+            'photos'   => 'on',
+            'colors'   => 'on',
+            'blanks'   => 'on',
+            'pageSize' => 'A4',
         ];
 
         new ReportParserSetup($xml);

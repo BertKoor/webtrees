@@ -99,10 +99,10 @@ class DescendancyReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'pid'      => ['id' => 'X1030'],
-            'maxgen'   => ['id' => '3'],
-            'sources'  => ['id' => 'on'],
-            'pageSize' => ['id' => 'A4'],
+            'pid'      => 'X1030',
+            'maxgen'   => '3',
+            'sources'  => 'on',
+            'pageSize' => 'A4',
         ];
 
         new ReportParserSetup($xml);

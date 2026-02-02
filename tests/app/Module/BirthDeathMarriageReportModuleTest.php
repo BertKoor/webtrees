@@ -89,14 +89,14 @@ class BirthDeathMarriageReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'name'       => ['id' => ''],
-            'bdmplace'   => ['id' => ''],
-            'birthdate1' => ['id' => ''],
-            'birthdate2' => ['id' => ''],
-            'deathdate1' => ['id' => ''],
-            'deathdate2' => ['id' => ''],
-            'sortby'     => ['id' => 'BIRT:DATE'],
-            'pageSize'   => ['id' => 'A4'],
+            'name'       => '',
+            'bdmplace'   => '',
+            'birthdate1' => '',
+            'birthdate2' => '',
+            'deathdate1' => '',
+            'deathdate2' => '',
+            'sortby'     => 'BIRT:DATE',
+            'pageSize'   => 'A4',
         ];
 
         new ReportParserSetup($xml);

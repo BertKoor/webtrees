@@ -96,12 +96,12 @@ class MarriageReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'name'      => ['id' => ''],
-            'marrplace' => ['id' => ''],
-            'marrdate1' => ['id' => ''],
-            'marrdate2' => ['id' => ''],
-            'sortby'    => ['id' => 'NAME'],
-            'pageSize'  => ['id' => 'A4'],
+            'name'      => '',
+            'marrplace' => '',
+            'marrdate1' => '',
+            'marrdate2' => '',
+            'sortby'    => 'NAME',
+            'pageSize'  => 'A4',
         ];
 
         new ReportParserSetup($xml);

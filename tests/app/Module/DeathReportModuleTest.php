@@ -98,13 +98,13 @@ class DeathReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'name'       => ['id' => ''],
-            'deathplace' => ['id' => ''],
-            'deathdate1' => ['id' => ''],
-            'deathdate2' => ['id' => ''],
-            'adlist'     => ['id' => 'none'],
-            'sortby'     => ['id' => 'NAME'],
-            'pageSize'   => ['id' => 'A4'],
+            'name'       => '',
+            'deathplace' => '',
+            'deathdate1' => '',
+            'deathdate2' => '',
+            'adlist'     => 'none',
+            'sortby'     => 'NAME',
+            'pageSize'   => 'A4',
         ];
 
         new ReportParserSetup($xml);

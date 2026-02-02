@@ -96,12 +96,12 @@ class IndividualReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'id'       => ['id' => 'X1030'],
-            'sources'   => ['id' => 'on'],
-            'notes'     => ['id' => 'on'],
-            'photos'    => ['id' => 'all'],
-            'colors'    => ['id' => 'on'],
-            'pageSize'  => ['id' => 'A4'],
+            'id'       => 'X1030',
+            'sources'  => 'on',
+            'notes'    => 'on',
+            'photos'   => 'all',
+            'colors'   => 'on',
+            'pageSize' => 'A4',
         ];
 
         new ReportParserSetup($xml);

@@ -99,14 +99,14 @@ class AhnentafelReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'pid'      => ['id' => 'X1030'],
-            'maxgen'   => ['id' => '3'],
-            'sources'  => ['id' => 'on'],
-            'pageSize' => ['id' => 'A4'],
-            'notes'    => ['id' => 'on'],
-            'occu'     => ['id' => 'on'],
-            'resi'     => ['id' => 'on'],
-            'children' => ['id' => 'on'],
+            'pid'      => 'X1030',
+            'maxgen'   => '3',
+            'sources'  => 'on',
+            'pageSize' => 'A4',
+            'notes'    => 'on',
+            'occu'     => 'on',
+            'resi'     => 'on',
+            'children' => 'on',
         ];
 
         new ReportParserSetup($xml);

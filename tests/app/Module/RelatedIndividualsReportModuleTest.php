@@ -96,15 +96,15 @@ class RelatedIndividualsReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'pid'       => ['id' => 'X1030'],
-            'relatives' => ['id' => 'child-family'],
-            'maxgen'    => ['id' => '4'],
-            'sortby'    => ['id' => 'BIRT:DATE'],
-            'sources'   => ['id' => 'on'],
-            'notes'     => ['id' => 'on'],
-            'photos'    => ['id' => 'all'],
-            'colors'    => ['id' => 'on'],
-            'pageSize'  => ['id' => 'A4'],
+            'pid'       => 'X1030',
+            'relatives' => 'child-family',
+            'maxgen'    => '4',
+            'sortby'    => 'BIRT:DATE',
+            'sources'   => 'on',
+            'notes'     => 'on',
+            'photos'    => 'all',
+            'colors'    => 'on',
+            'pageSize'  => 'A4',
         ];
 
         new ReportParserSetup($xml);

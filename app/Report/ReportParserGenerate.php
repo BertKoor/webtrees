@@ -161,7 +161,7 @@ class ReportParserGenerate extends ReportParserBase
     // It's not clear what this variable does.
     private ReportBaseElement|AbstractRenderer $wt_report;
 
-    /** @var array<array<string>> Variables defined in the report at run-time */
+    /** @var array<string,string> Variables defined in the report at run-time */
     private array $vars;
 
     private Tree $tree;
@@ -267,8 +267,8 @@ class ReportParserGenerate extends ReportParserBase
 
         foreach ($attrs as $key => $value) {
             if (preg_match("/^\\$(\w+)$/", $value, $match)) {
-                if (isset($this->vars[$match[1]]['id']) && !isset($this->vars[$match[1]]['gedcom'])) {
-                    $value = $this->vars[$match[1]]['id'];
+                if (isset($this->vars[$match[1]])) {
+                    $value = $this->vars[$match[1]];
                 }
             }
             $newattrs[$key] = $value;
@@ -456,12 +456,8 @@ class ReportParserGenerate extends ReportParserBase
             $newgedrec = '';
             foreach ($tags as $tag) {
                 if (preg_match('/\$(.+)/', $tag, $match)) {
-                    if (isset($this->vars[$match[1]]['gedcom'])) {
-                        $newgedrec = $this->vars[$match[1]]['gedcom'];
-                    } else {
-                        $tmp       = Registry::gedcomRecordFactory()->make($match[1], $this->tree);
-                        $newgedrec = $tmp ? $tmp->privatizeGedcom(Auth::accessLevel($this->tree)) : '';
-                    }
+                    $tmp       = Registry::gedcomRecordFactory()->make($match[1], $this->tree);
+                    $newgedrec = $tmp ? $tmp->privatizeGedcom(Auth::accessLevel($this->tree)) : '';
                 } elseif (preg_match('/@(.+)/', $tag, $match)) {
                     $gmatch = [];
                     if (preg_match("/\d $match[1] @([^@]+)@/", $tgedrec, $gmatch)) {
@@ -579,8 +575,8 @@ class ReportParserGenerate extends ReportParserBase
                 $id = $match[1];
             }
         } elseif (preg_match('/\$(.+)/', $attrs['id'], $match)) {
-            if (isset($this->vars[$match[1]]['id'])) {
-                $id = $this->vars[$match[1]]['id'];
+            if (isset($this->vars[$match[1]])) {
+                $id = $this->vars[$match[1]];
             }
         } elseif (preg_match('/@(.+)/', $attrs['id'], $match)) {
             $gmatch = [];
@@ -853,8 +849,8 @@ class ReportParserGenerate extends ReportParserBase
 
         $var = $attrs['var'];
         // SetVar element preset variables
-        if (!empty($this->vars[$var]['id'])) {
-            $var = $this->vars[$var]['id'];
+        if (!empty($this->vars[$var])) {
+            $var = $this->vars[$var];
         } else {
             $tfact = $this->fact;
             if (($this->fact === 'EVEN' || $this->fact === 'FACT') && $this->type !== '') {
@@ -917,7 +913,7 @@ class ReportParserGenerate extends ReportParserBase
             $tag .= $attrs['ignore'];
         }
         if (preg_match('/\$(.+)/', $tag, $match)) {
-            $tag = $this->vars[$match[1]]['id'];
+            $tag = $this->vars[$match[1]];
         }
 
         $record = Registry::gedcomRecordFactory()->make($id, $this->tree);
@@ -1063,12 +1059,12 @@ class ReportParserGenerate extends ReportParserBase
             }
         }
         if (preg_match("/\\$(\w+)/", $name, $match)) {
-            $name = $this->vars["'" . $match[1] . "'"]['id'];
+            $name = $this->vars["'" . $match[1] . "'"];
         }
         $count = preg_match_all("/\\$(\w+)/", $value, $match, PREG_SET_ORDER);
         $i     = 0;
         while ($i < $count) {
-            $t     = $this->vars[$match[$i][1]]['id'];
+            $t     = $this->vars[$match[$i][1]];
             $value = preg_replace('/\$' . $match[$i][1] . '/', $t, $value, 1);
             $i++;
         }
@@ -1093,7 +1089,7 @@ class ReportParserGenerate extends ReportParserBase
         if (str_contains($value, '@')) {
             $value = '';
         }
-        $this->vars[$name]['id'] = $value;
+        $this->vars[$name] = $value;
     }
 
     /**
@@ -1342,7 +1338,7 @@ class ReportParserGenerate extends ReportParserBase
         if (isset($attrs['sortby'])) {
             $sortby = $attrs['sortby'];
             if (preg_match("/\\$(\w+)/", $sortby, $match)) {
-                $sortby = $this->vars[$match[1]]['id'];
+                $sortby = $this->vars[$match[1]];
                 $sortby = trim($sortby);
             }
         } else {
@@ -1580,7 +1576,7 @@ class ReportParserGenerate extends ReportParserBase
                         $expr = trim($match[2]);
                         $val  = trim($match[3]);
                         if (preg_match("/\\$(\w+)/", $val, $match)) {
-                            $val = $this->vars[$match[1]]['id'];
+                            $val = $this->vars[$match[1]];
                             $val = trim($val);
                         }
                         if ($val !== '') {
@@ -1841,7 +1837,7 @@ class ReportParserGenerate extends ReportParserBase
 
         $match = [];
         if (preg_match("/\\$(\w+)/", $sortby, $match)) {
-            $sortby = $this->vars[$match[1]]['id'];
+            $sortby = $this->vars[$match[1]];
             $sortby = trim($sortby);
         }
 
@@ -1849,14 +1845,14 @@ class ReportParserGenerate extends ReportParserBase
         $group  = $attrs['group'] ?? 'child-family';
 
         if (preg_match("/\\$(\w+)/", $group, $match)) {
-            $group = $this->vars[$match[1]]['id'];
+            $group = $this->vars[$match[1]];
             $group = trim($group);
         }
 
         $id = $attrs['id'] ?? '';
 
         if (preg_match("/\\$(\w+)/", $id, $match)) {
-            $id = $this->vars[$match[1]]['id'];
+            $id = $this->vars[$match[1]];
             $id = trim($id);
         }
 
@@ -2211,15 +2207,15 @@ class ReportParserGenerate extends ReportParserBase
         return preg_replace_callback(
             '/\$(\w+)/',
             function (array $matches) use ($quote): string {
-                if (isset($this->vars[$matches[1]]['id'])) {
+                if (isset($this->vars[$matches[1]])) {
                     if ($quote) {
-                        return "'" . addcslashes($this->vars[$matches[1]]['id'], "'") . "'";
+                        return "'" . addcslashes($this->vars[$matches[1]], "'") . "'";
                     }
 
-                    return $this->vars[$matches[1]]['id'];
+                    return $this->vars[$matches[1]];
                 }
 
-                Log::addErrorLog(sprintf('Undefined variable $%s in report', $matches[1]));
+                throw new DomainException(sprintf('Undefined variable $%s in report', $matches[1]));
 
                 return '$' . $matches[1];
             },

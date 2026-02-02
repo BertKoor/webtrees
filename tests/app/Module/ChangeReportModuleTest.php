@@ -99,12 +99,12 @@ class ChangeReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'changeRangeStart' => ['id' => Registry::timestampFactory()->now()->subtractMonths(1)->format('d M Y')],
-            'changeRangeEnd'   => ['id' => Registry::timestampFactory()->now()->format('d M Y')],
-            'pending'          => ['id' => 'yes'],
-            'sortby'           => ['id' => 'CHAN'],
-            'pageSize'         => ['id' => 'A4'],
-            'pageorient'       => ['id' => 'landscape'],
+            'changeRangeStart' => Registry::timestampFactory()->now()->subtractMonths(1)->format('d M Y'),
+            'changeRangeEnd'   => Registry::timestampFactory()->now()->format('d M Y'),
+            'pending'          => 'yes',
+            'sortby'           => 'CHAN',
+            'pageSize'         => 'A4',
+            'pageorient'       => 'landscape',
         ];
 
         new ReportParserSetup($xml);

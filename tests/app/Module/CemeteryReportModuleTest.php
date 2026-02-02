@@ -98,10 +98,10 @@ class CemeteryReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'deathplace' => ['id' => ''],
-            'adlist'     => ['id' => 'none'],
-            'sortby'     => ['id' => 'NAME'],
-            'pageSize'   => ['id' => 'A4'],
+            'deathplace' => '',
+            'adlist'     => 'none',
+            'sortby'     => 'NAME',
+            'pageSize'   => 'A4',
         ];
 
         new ReportParserSetup($xml);

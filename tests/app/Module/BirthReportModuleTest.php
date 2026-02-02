@@ -98,12 +98,12 @@ class BirthReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'name'       => ['id' => ''],
-            'birthplace' => ['id' => ''],
-            'birthdate1' => ['id' => ''],
-            'birthdate2' => ['id' => ''],
-            'sortby'     => ['id' => 'NAME'],
-            'pageSize'   => ['id' => 'A4'],
+            'name'       => '',
+            'birthplace' => '',
+            'birthdate1' => '',
+            'birthdate2' => '',
+            'sortby'     => 'NAME',
+            'pageSize'   => 'A4',
         ];
 
         new ReportParserSetup($xml);

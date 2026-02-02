@@ -99,15 +99,15 @@ class IndividualFamiliesReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'pid'       => ['id' => 'X1030'],
-            'relatives' => ['id' => 'child-families'],
-            'maxgen'    => ['id' => '4'],
-            'sortby'    => ['id' => 'BIRT:DATE'],
-            'sources'   => ['id' => 'on'],
-            'notes'     => ['id' => 'on'],
-            'photos'    => ['id' => 'on'],
-            'pageSize'  => ['id' => 'A4'],
-            'colors'    => ['id' => 'on'],
+            'pid'       => 'X1030',
+            'relatives' => 'child-families',
+            'maxgen'    => '4',
+            'sortby'    => 'BIRT:DATE',
+            'sources'   => 'on',
+            'notes'     => 'on',
+            'photos'    => 'on',
+            'pageSize'  => 'A4',
+            'colors'    => 'on',
         ];
 
         new ReportParserSetup($xml);

@@ -98,10 +98,10 @@ class FactSourcesReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'id'       => ['id' => 's1'],
-            'stype'    => ['id' => 'facts'],
-            'sortby'   => ['id' => 'BIRT:DATE'],
-            'pageSize' => ['id' => 'A4'],
+            'sid'      => 'X1102',
+            'stype'    => 'facts',
+            'sortby'   => 'BIRT:DATE',
+            'pageSize' => 'A4',
         ];
 
         new ReportParserSetup($xml);

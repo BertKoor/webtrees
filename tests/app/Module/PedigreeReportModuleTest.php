@@ -96,9 +96,9 @@ class PedigreeReportModuleTest extends TestCase
 
         $xml  = 'resources/' . $module->xmlFilename();
         $vars = [
-            'pid'         => ['id' => 'X1030'],
-            'spouses'     => ['id' => 'on'],
-            'orientation' => ['id' => 'portrait'],
+            'pid'         => 'X1030',
+            'spouses'     => 'on',
+            'orientation' => 'portrait',
         ];
 
         new ReportParserSetup($xml);
