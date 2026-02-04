@@ -19,90 +19,15 @@ declare(strict_types=1);
 
 namespace Fisharebest\Webtrees;
 
-use Fisharebest\Webtrees\Contracts\UserInterface;
-
-use function is_string;
-
 /**
  * A site visitor.
  */
-class GuestUser implements UserInterface
+class GuestUser extends VolatileUser
 {
-    private string $email;
 
-    private string $real_name;
-
-    /**
-     * @param string $email
-     * @param string $real_name
-     */
-    public function __construct(string $email = 'GUEST_USER', string $real_name = 'GUEST_USER')
+    public function __construct(string $real_name = 'GUEST_USER')
     {
-        $this->email = $email;
-        $this->real_name = $real_name;
+        parent::__construct('_GUEST_', $real_name);
     }
 
-    /**
-     * The user‘s internal identifier.
-     *
-     * @return int
-     */
-    public function id(): int
-    {
-        return 0;
-    }
-
-    /**
-     * The users email address.
-     *
-     * @return string
-     */
-    public function email(): string
-    {
-        return $this->email;
-    }
-
-    /**
-     * The user‘s real name.
-     *
-     * @return string
-     */
-    public function realName(): string
-    {
-        return $this->real_name;
-    }
-
-    /**
-     * The user‘s login name.
-     *
-     * @return string
-     */
-    public function userName(): string
-    {
-        return '';
-    }
-
-    /**
-     * @param string $setting_name
-     * @param string $default
-     *
-     * @return string
-     */
-    public function getPreference(string $setting_name, string $default = ''): string
-    {
-        $preference = Session::get('_GUEST_' . $setting_name);
-
-        return is_string($preference) ? $preference : $default;
-    }
-
-    /**
-     * @param string $setting_name
-     * @param string $setting_value
-     *
-     * @return void
-     */
-    public function setPreference(string $setting_name, string $setting_value): void
-    {
-        Session::put('_GUEST_' . $setting_name, $setting_value);
-    }
 }

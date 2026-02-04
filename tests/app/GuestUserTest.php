@@ -29,19 +29,19 @@ class GuestUserTest extends TestCase
         $user = new GuestUser();
 
         self::assertSame(0, $user->id());
-        self::assertSame('GUEST_USER', $user->email());
+        self::assertSame('_GUEST_', $user->userName());
         self::assertSame('GUEST_USER', $user->realName());
-        self::assertSame('', $user->userName());
+        self::assertSame('N/A', $user->email());
     }
 
     public function testVisitor(): void
     {
-        $user = new GuestUser('guest@example.com', 'guest user');
+        $user = new GuestUser('guest user');
 
         self::assertSame(0, $user->id());
-        self::assertSame('guest@example.com', $user->email());
+        self::assertSame('_GUEST_', $user->userName());
         self::assertSame('guest user', $user->realName());
-        self::assertSame('', $user->userName());
+        self::assertSame('N/A', $user->email());
     }
 
     public function testPreferences(): void
