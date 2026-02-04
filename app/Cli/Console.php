@@ -52,19 +52,30 @@ final class Console extends Application
         parent::__construct(name: Webtrees::NAME, version: Webtrees::VERSION);
     }
 
-    public function loadCommands(): self
+    public function bootstrap(): self
+    {
+        return $this
+            ->loadCommands()
+            ->initI18N()
+            ->connectDatabase();
+    }
+
+    private function loadCommands(): self
     {
         foreach (self::COMMANDS as $command) {
             $this->addCommand(command: Registry::container()->get($command));
         }
-
         return $this;
     }
 
-    public function bootstrap(): self
+    private function initI18N(): self
     {
         I18N::init(code: 'en-US', setup: true);
+        return $this;
+    }
 
+    private function connectDatabase(): self
+    {
         try {
             $config = parse_ini_file(filename: Webtrees::CONFIG_FILE) ?: [];
 
@@ -79,12 +90,12 @@ final class Console extends Application
                 key: $config['dbkey'] ?? '',
                 certificate: $config['dbcert'] ?? '',
                 ca: $config['dbca'] ?? '',
-                verify_certificate: (bool) ($config['dbverify'] ?? ''),
+                verify_certificate: (bool)($config['dbverify'] ?? ''),
             );
         } catch (Throwable) {
             // Ignore errors
         }
-
         return $this;
     }
+
 }
