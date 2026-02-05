@@ -22,6 +22,7 @@ namespace Fisharebest\Webtrees\Cli;
 use Fisharebest\Webtrees\DB;
 use Fisharebest\Webtrees\I18N;
 use Fisharebest\Webtrees\Registry;
+use Fisharebest\Webtrees\Session;
 use Fisharebest\Webtrees\Webtrees;
 use Symfony\Component\Console\Application;
 use Throwable;
@@ -30,6 +31,8 @@ use function parse_ini_file;
 
 final class Console extends Application
 {
+    public const string CLI_SESSION = 'cli_session';
+
     private const array COMMANDS = [
         Commands\CompilePoFiles::class,
         Commands\ConfigIni::class,
@@ -57,7 +60,8 @@ final class Console extends Application
         return $this
             ->loadCommands()
             ->initI18N()
-            ->connectDatabase();
+            ->connectDatabase()
+            ->initSession();
     }
 
     private function loadCommands(): self
@@ -95,6 +99,12 @@ final class Console extends Application
         } catch (Throwable) {
             // Ignore errors
         }
+        return $this;
+    }
+
+    private function initSession(): self
+    {
+        Session::put(self::CLI_SESSION, '1');
         return $this;
     }
 
