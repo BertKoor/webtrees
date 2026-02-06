@@ -55,9 +55,12 @@ use Fisharebest\Webtrees\I18N;
 
 <div class="row mb-3">
     <label for="delay" class="col-sm-3 col-form-label">
-        <?= I18N::translate('How long to show each slide (seconds)') ?>
+        <?= I18N::translate('How long to show each slide') ?>
     </label>
     <div class="col-sm-9">
-        <input type="number" name="delay" id="delay" class="form-control" value="<?= $delay ?>" min="1" max="999">
+        <div class="input-group">
+            <input type="number" name="delay" id="delay" class="form-control" value="<?= $delay ?>" min="1" max="999">
+            <span class="input-group-text"><?= I18N::translate('seconds') ?></span>
+        </div>
     </div>
 </div>
