@@ -238,7 +238,7 @@ class SlideShowModule extends AbstractModule implements ModuleBlockInterface
         $this->setBlockSetting($block_id, 'filter', Validator::parsedBody($request)->string('filter'));
         $this->setBlockSetting($block_id, 'controls', Validator::parsedBody($request)->string('controls'));
         $this->setBlockSetting($block_id, 'start', Validator::parsedBody($request)->string('start'));
-        $this->setBlockSetting($block_id, 'delay', (string) Validator::parsedBody($request)->isBetween(1,999)->integer('delay'));
+        $this->setBlockSetting($block_id, 'delay', (string) Validator::parsedBody($request)->isBetween(1, 999)->integer('delay'));
         $this->setBlockSetting($block_id, 'filter_' . strtolower(SourceMediaType::VALUE_AUDIO), (string) Validator::parsedBody($request)->boolean(SourceMediaType::VALUE_AUDIO, false));
         $this->setBlockSetting($block_id, 'filter_' . strtolower(SourceMediaType::VALUE_BOOK), (string) Validator::parsedBody($request)->boolean(SourceMediaType::VALUE_BOOK, false));
         $this->setBlockSetting($block_id, 'filter_' . strtolower(SourceMediaType::VALUE_CARD), (string) Validator::parsedBody($request)->boolean(SourceMediaType::VALUE_CARD, false));
