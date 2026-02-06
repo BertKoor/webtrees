@@ -615,5 +615,4 @@ class Auth
             'hidden'       => I18N::translate('Hide from everyone'),
         ];
     }
-
 }

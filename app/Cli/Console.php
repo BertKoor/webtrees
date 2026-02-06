@@ -69,6 +69,7 @@ final class Console extends Application
         foreach (self::COMMANDS as $command) {
             $this->addCommand(command: Registry::container()->get($command));
         }
+
         return $this;
     }
 
@@ -94,7 +95,7 @@ final class Console extends Application
                 key: $config['dbkey'] ?? '',
                 certificate: $config['dbcert'] ?? '',
                 ca: $config['dbca'] ?? '',
-                verify_certificate: (bool)($config['dbverify'] ?? ''),
+                verify_certificate: (bool) ($config['dbverify'] ?? ''),
             );
         } catch (Throwable) {
             // Ignore errors
