@@ -20,13 +20,17 @@ declare(strict_types=1);
 namespace Fisharebest\Webtrees;
 
 use Closure;
+use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager;
+use Illuminate\Database\Connection;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Expression;
 use PDO;
 use PDOException;
 use RuntimeException;
 use SensitiveParameter;
+use Xgrz\Firebird\FirebirdConnection;
+use Xgrz\Firebird\FirebirdConnector;
 
 final class DB extends Manager
 {
@@ -119,7 +123,17 @@ final class DB extends Manager
             $database = Webtrees::ROOT_DIR . 'data/' . $database . '.sqlite';
         }
 
-        $capsule = new self();
+        $container = new Container();
+        $capsule = new self($container);
+
+        if ($driver === self::FIREBIRD) {
+            Connection::resolverFor('firebird',
+                function($connection, $database, $tablePrefix, $config)
+                {
+                    return new FirebirdConnection($connection, $database, $tablePrefix, $config);
+                });
+            $container->instance('db.connector.firebird', new FirebirdConnector);
+        }
         $capsule->addConnection([
             'driver'                   => $driver,
             'host'                     => $host,
@@ -137,7 +151,10 @@ final class DB extends Manager
         // Eager-load the connection to prevent database credentials appearing in error logs.
         try {
             self::pdo();
+            error_log('eager load PDO: OK');
         } catch (PDOException $exception) {
+            error_log('eager load PDO threw a ' . class_basename($exception) . ': ' . $exception->getMessage());
+            error_log($exception->getTraceAsString());
             throw new RuntimeException($exception->getMessage());
         }
 
