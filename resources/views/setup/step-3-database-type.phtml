@@ -83,6 +83,13 @@ use Illuminate\Support\Collection;
                 </label>
             </div>
 
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="dbtype" id="dbtype-firebird" value="firebird" <?= $dbtype === DB::FIREBIRD ? 'checked' : '' ?>>
+                <label class="form-check-label" for="dbtype-firebird">
+                    Firebird
+                </label>
+            </div>
+
             <div class="form-text">
             </div>
         </div>

@@ -86,6 +86,7 @@ final class SetupWizard implements RequestHandlerInterface
         DB::POSTGRESQL => '5432',
         DB::SQLITE     => '',
         DB::SQL_SERVER => '', // Do not use default, as it is valid to have no port number.
+        DB::FIREBIRD   => '3050',
     ];
 
     public function __construct(
