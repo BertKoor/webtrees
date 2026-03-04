@@ -269,6 +269,12 @@ class ServerCheckService
                     $this->checkPhpExtension('pdo_sqlsrv'),
                 ]);
 
+            case DB::FIREBIRD:
+                return Collection::make([
+                    $this->checkPhpExtension('pdo'),
+                    $this->checkPhpExtension('pdo_firebird'),
+                ]);
+
             default:
                 return new Collection();
         }
