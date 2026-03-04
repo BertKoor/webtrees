@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b32a4d43ca7fb9a712e6bf007f5dd47c",
+    "content-hash": "658581ed29a7f9b7b0b257257f3f6c1e",
     "packages": [
         {
             "name": "aura/router",
@@ -1121,6 +1121,59 @@
             "time": "2025-08-23T21:21:41+00:00"
         },
         {
+            "name": "illuminate/bus",
+            "version": "v12.53.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/bus.git",
+                "reference": "c2ceb60c70961815f88da24ab0b7a7f32d47cf4e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/bus/zipball/c2ceb60c70961815f88da24ab0b7a7f32d47cf4e",
+                "reference": "c2ceb60c70961815f88da24ab0b7a7f32d47cf4e",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/collections": "^12.0",
+                "illuminate/contracts": "^12.0",
+                "illuminate/pipeline": "^12.0",
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "suggest": {
+                "illuminate/queue": "Required to use closures when chaining jobs (^12.0)."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "12.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Bus\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Bus package.",
+            "homepage": "https://laravel.com",
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2026-02-23T15:43:34+00:00"
+        },
+        {
             "name": "illuminate/collections",
             "version": "v12.50.0",
             "source": {
@@ -1409,6 +1462,61 @@
             "time": "2026-02-04T15:21:01+00:00"
         },
         {
+            "name": "illuminate/events",
+            "version": "v12.53.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/events.git",
+                "reference": "b71e42451496175f8fd898cb6a67ad7fd613d00b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/events/zipball/b71e42451496175f8fd898cb6a67ad7fd613d00b",
+                "reference": "b71e42451496175f8fd898cb6a67ad7fd613d00b",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/bus": "^12.0",
+                "illuminate/collections": "^12.0",
+                "illuminate/container": "^12.0",
+                "illuminate/contracts": "^12.0",
+                "illuminate/macroable": "^12.0",
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "12.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "functions.php"
+                ],
+                "psr-4": {
+                    "Illuminate\\Events\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Events package.",
+            "homepage": "https://laravel.com",
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2026-02-23T15:43:34+00:00"
+        },
+        {
             "name": "illuminate/macroable",
             "version": "v12.50.0",
             "source": {
@@ -1453,6 +1561,58 @@
                 "source": "https://github.com/laravel/framework"
             },
             "time": "2024-07-23T16:31:01+00:00"
+        },
+        {
+            "name": "illuminate/pipeline",
+            "version": "v12.53.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/pipeline.git",
+                "reference": "b6a14c20d69a44bf0a6fba664a00d23ca71770ee"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/pipeline/zipball/b6a14c20d69a44bf0a6fba664a00d23ca71770ee",
+                "reference": "b6a14c20d69a44bf0a6fba664a00d23ca71770ee",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^12.0",
+                "illuminate/macroable": "^12.0",
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "suggest": {
+                "illuminate/database": "Required to use database transactions (^12.0)."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "12.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Pipeline\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Pipeline package.",
+            "homepage": "https://laravel.com",
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2025-08-20T13:36:50+00:00"
         },
         {
             "name": "illuminate/reflection",
@@ -5950,6 +6110,52 @@
                 }
             ],
             "time": "2024-11-21T01:49:47+00:00"
+        },
+        {
+            "name": "xgrz/firebird-support",
+            "version": "v1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xGrz/firebird-support.git",
+                "reference": "89360dad9bc1b315d73f383bb5a2d6ee3fc2a7ed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xGrz/firebird-support/zipball/89360dad9bc1b315d73f383bb5a2d6ee3fc2a7ed",
+                "reference": "89360dad9bc1b315d73f383bb5a2d6ee3fc2a7ed",
+                "shasum": ""
+            },
+            "require": {
+                "ext-pdo": "*",
+                "illuminate/container": "^12.0",
+                "illuminate/database": "^12.0",
+                "illuminate/events": "^12.0",
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Xgrz\\Firebird\\FirebirdServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Xgrz\\Firebird\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Firebird database driver for the Laravel Framework",
+            "support": {
+                "issues": "https://github.com/xGrz/firebird-support/issues",
+                "source": "https://github.com/xGrz/firebird-support/tree/v1.0.3"
+            },
+            "time": "2025-10-13T08:05:37+00:00"
         }
     ],
     "packages-dev": [

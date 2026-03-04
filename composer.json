@@ -74,7 +74,8 @@
         "symfony/expression-language": "7.4.4",
         "symfony/mailer": "7.4.4",
         "symfony/polyfill-mbstring": "1.33.0",
-        "tecnickcom/tcpdf": "6.10.1"
+        "tecnickcom/tcpdf": "6.10.1",
+        "xgrz/firebird-support": "^1.0"
     },
     "require-dev": {
         "ext-dom": "*",
