@@ -72,6 +72,17 @@ class Individual extends GedcomRecord
     }
 
     /**
+     * A closure which will compare individuals by burial place.
+     *
+     * @return Closure(Individual,Individual):int
+     */
+    public static function burialPlaceComparator(): Closure
+    {
+        return static fn (Individual $x, Individual $y): int => Place::compare($x->getBurialPlace(), $y->getBurialPlace());
+    }
+
+
+    /**
      * Can the name of this record be shown?
      *
      * @param int|null $access_level
@@ -408,6 +419,22 @@ class Individual extends GedcomRecord
     public function getDeathPlace(): Place
     {
         foreach ($this->getAllDeathPlaces() as $place) {
+            return $place;
+        }
+
+        return new Place('', $this->tree);
+    }
+
+    /**
+     * Get the place of burial
+     *
+     * @return Place
+     */
+    public function getBurialPlace(): Place
+    {
+        $places = $this->getAllEventPlaces(['BURI']);
+
+        foreach ($places as $place) {
             return $place;
         }
 
