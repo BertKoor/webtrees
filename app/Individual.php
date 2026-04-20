@@ -82,6 +82,16 @@ class Individual extends GedcomRecord
     }
 
     /**
+     * A closure which will compare individuals by death place.
+     *
+     * @return Closure(Individual,Individual):int
+     */
+    public static function deathPlaceComparator(): Closure
+    {
+        return static fn (Individual $x, Individual $y): int => Place::compare($x->getDeathPlace(), $y->getDeathPlace());
+    }
+
+    /**
      * A closure which will compare individuals by burial place.
      *
      * @return Closure(Individual,Individual):int
