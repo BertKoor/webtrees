@@ -1699,6 +1699,9 @@ class ReportParserGenerate extends ReportParserBase
             case 'BIRT:DATE':
                 uasort($this->list, Individual::birthDateComparator());
                 break;
+            case 'BIRT:PLAC':
+                uasort($this->list, Individual::birthPlaceComparator());
+                break;
             case 'DEAT:DATE':
                 uasort($this->list, Individual::deathDateComparator());
                 break;

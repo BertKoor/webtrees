@@ -72,6 +72,16 @@ class Individual extends GedcomRecord
     }
 
     /**
+     * A closure which will compare individuals by birth place.
+     *
+     * @return Closure(Individual,Individual):int
+     */
+    public static function birthPlaceComparator(): Closure
+    {
+        return static fn (Individual $x, Individual $y): int => Place::compare($x->getBirthPlace(), $y->getBirthPlace());
+    }
+
+    /**
      * A closure which will compare individuals by burial place.
      *
      * @return Closure(Individual,Individual):int
@@ -80,7 +90,6 @@ class Individual extends GedcomRecord
     {
         return static fn (Individual $x, Individual $y): int => Place::compare($x->getBurialPlace(), $y->getBurialPlace());
     }
-
 
     /**
      * Can the name of this record be shown?
